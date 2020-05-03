@@ -8,12 +8,16 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import Vuelidate from 'vuelidate'
 import vuetify from './plugins/vuetify';
 import filters from '@/filters'
+
 
 Vue.config.productionTip = false
 
 filters()
+
+Vue.use(Vuelidate)
 
 new Vue({
   router,

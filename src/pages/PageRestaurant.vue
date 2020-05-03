@@ -1,48 +1,67 @@
 <template>
     <div>
         <v-container>
-            <v-row no-gutters class="justify-space-between">
+            <v-row>
                 <v-col  cols="12" md="4">
-                        <div class="row">
-                            <v-col cols="12" lg="4">
-                                <v-img :src="restaurant.logo" max-height="120" contain></v-img>
-                            </v-col>                    
+                        <div class="row">                                                                              
                             <v-col cols="12" lg="8">
-                                <h1 class="title">{{ restaurant.name }}</h1>
-                                <h2 class="subtitle-1">{{ restaurant.description }}</h2>
-                                <h3 class="subtitle-2"><v-icon v-on="on">mdi-pound-box</v-icon>hamburguesas carne madrid</h3>
+                                <v-img :src="restaurant.logo" max-height="120" contain></v-img>       
+                                <h1 class="top__title">{{ restaurant.name }}</h1>
+                                <h2 class="top__subtitle">{{ restaurant.description }}</h2>      
+                                <div>
+                                    <v-chip  v-for="(tag, index) in restaurant.tags" :key="index"
+                                        class="ma-1 top__chips"
+                                        color="#4496E8"
+                                    >
+                                        {{ tag }}
+                                    </v-chip>
+                                </div>
                             </v-col>    
                         </div>                                            
                 </v-col>
-                <v-col  cols="12" md="4" class="align-center">      
+                <v-col  cols="12" md="4" class="align-self-end">      
                     <div class="row">
                         <v-col cols="12">
-                            <p><v-icon v-on="on">mdi-clock-outline</v-icon><span v-bind:class="{red:!isOpen}"> <strong> Horario de pedidos: </strong>{{ restaurant.opening }} - {{ restaurant.closing }} </span></p>                    
-                            <p v-if="restaurant.delivery"><v-icon v-on="on">mdi-moped</v-icon>Local con reparto</p>     
-                            <p v-if="restaurant.takeaway"><v-icon v-on="on">mdi-basket</v-icon> Recogida</p>     
+                            <div><v-icon color="#4496E8">mdi-clock-outline</v-icon><span v-bind:class="{closed:!isOpen}"> <strong> Horario de pedidos: </strong>{{ restaurant.opening }} - {{ restaurant.closing }} </span></div>                   
+                            <v-icon color="#4496E8" v-if="restaurant.delivery">mdi-moped</v-icon>Local con reparto     
+                            <v-icon color="#4496E8" v-if="restaurant.takeaway">mdi-basket</v-icon> Recogida   
                         </v-col>
                     </div>                                      
                 </v-col>
             </v-row>            
         </v-container>
-        <v-container fluid class="mb-4">
-            <v-row no-gutters>
-                <v-col cols="2" class="empty">
-                    <div class="empty">CATEGORIAS</div>   
+        <v-container class="mb-4">
+            <v-row class="justify-space-between">
+                <v-col md="2">
+                    <CategoriesSidebar :cart="cart" class="sticky"></CategoriesSidebar>
                 </v-col>
-                <v-col cols="8">        
+                <v-col md="6">        
                     <ProductList :products="products" @productClicked="openProduct"></ProductList>                              
                 </v-col>
-                <v-col cols="2" class="empty" md="display-none">
-                    <div class="empty">CARRITO</div>   
+                <v-col md="3">
+                    <CartSidebar :cart="cart" @onCartElementRemoved="showSnackbar" class="sticky"></CartSidebar>
                 </v-col>
             </v-row>                
         </v-container>
-
-
         
-          <ProductDialog :isOpen="modalProduct" @closeModal="modalProduct=!modalProduct" :product="products[clickedProduct]"/>        
-       
+    
+        
+        <ProductNewDialog :isOpen="modalProduct" @closeModal="modalProduct=!modalProduct" @onElementAdded="addCartElementHandler" :product="products[clickedProduct]"/>        
+        <v-snackbar
+            top
+            :timeout=2500
+            v-model="snackbar.show"
+            color="success"
+        >
+            {{ snackbar.text }}
+            <v-btn
+            color="black"
+            text
+            @click="snackbar.show = false"
+            >
+            Close
+            </v-btn>
+        </v-snackbar>
 
 
     </div>
@@ -55,16 +74,22 @@
 <script>
 import { mapState } from 'vuex'
 import ProductList from '@/components/ProductList'
-import ProductDialog from '@/components/ProductDialog'
+import ProductNewDialog from '@/components/ProductNewDialog'
+import CartSidebar from '@/components/CartSidebar'
+import CategoriesSidebar from '@/components/CategoriesSidebar'
 export default {    
     components:{
-        ProductList, ProductDialog
+        ProductList, ProductNewDialog, CartSidebar, CategoriesSidebar
     },
     data(){
         return{
             modalAlergen:false,
             modalProduct:false,
-            clickedProduct:0
+            clickedProduct:0,
+            snackbar:{
+                show:false,
+                text:''
+            }
         }
     },
     props:{
@@ -81,7 +106,8 @@ export default {
       ...mapState({
         restaurant: state => state.restaurants.item,        
         products: state => state.products.items,        
-      }),
+        cart: state => state.cart.items,        
+      }),      
       isOpen(){
             var ahora = new Date().getHours();
             return ahora >= parseInt(this.restaurant.opening) && ahora <= parseInt(this.restaurant.closing) 
@@ -94,12 +120,54 @@ export default {
                 return product._id === productId;
             })
             this.modalProduct=true
-        }
+        },        
+        showSnackbar(msg){
+            this.snackbar.text=msg
+            this.snackbar.show=true
+        },
+        addCartElementHandler(msg){
+            this.modalProduct=!this.modalProduct
+            this.showSnackbar(msg)
+        },       
     }
 }
 </script>
 <style scoped>
+
+.closed{
+    background-color: rgb(255, 0, 0, .7);
+}
+
 .empty{
     background-color: bisque;
 }
+
+.sticky{
+    position: sticky;
+    top: 6rem;
+}
+
+.cont{
+    padding-right: 3rem;
+    padding-left: 3rem;
+}
+
+.top__title{
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.top__subtitle{
+    font-size: 16px;
+    font-weight: 400;
+    color: #808080;
+}
+
+.top__chips{
+    max-height: 9px;
+    font-size: 8px !important;
+    font-weight: 300;
+    color: #F2F2F2 !important;    
+}
+
 </style>

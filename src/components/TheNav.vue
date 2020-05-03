@@ -1,13 +1,12 @@
 <template>    
     <div>
-        <v-app-bar
-            prominent
-            absolute
-            dark
-            shrink-on-scroll            
-            fade-img-on-scroll
-            scroll-target="#scrolling-techniques-4"
-        >
+        <v-app-bar            
+            app
+            dark                                     
+        >            
+            <v-avatar :tile="true">
+                <img :src="require('@/assets/logo_mono.png')" alt="logo">
+            </v-avatar>
             <v-toolbar flat>
                 
                 <v-toolbar-title>
@@ -20,18 +19,12 @@
                     <router-link :to="{name: 'PageRestaurant', params:{id:'5e90eb87c7c06b37a663d188'}}" class="navbar-item">
                         BUDDY HOLLY
                     </router-link>
-                </v-toolbar-title>    
-                <v-app-bar-nav-icon></v-app-bar-nav-icon>
-                
+                </v-toolbar-title>                                    
 
                 <v-spacer></v-spacer>
 
                 <v-btn icon>
                     <v-icon>mdi-magnify</v-icon>
-                </v-btn>
-
-                <v-btn icon>
-                    <v-icon>mdi-heart</v-icon>
                 </v-btn>
 
                 <v-btn icon>

@@ -1,6 +1,7 @@
 import api from '@/store/api/';
 import * as type from './types'
 
+//TODO organizar thens
 export default {
   getRestaurant ({ commit, dispatch },  id ) {          
     commit(type.REQUEST_RESTAURANT)
@@ -11,7 +12,15 @@ export default {
         })        
         dispatch('products/getProductsByOwnerId', id, {root:true})
         .then(res2=>{
-          return res2;
+          dispatch('extras/getExtras', id, {root:true})
+          .then(res3=>{
+            dispatch('categories/getCategoriesByOwnerId', id, {root:true})
+              .then(res4=>{
+                return res4
+              })   
+              return res3
+          })    
+          return res2      
         })
       })
       .catch(error => {

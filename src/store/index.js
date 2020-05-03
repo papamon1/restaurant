@@ -18,13 +18,21 @@ import Vuex from 'vuex'
 
 import restaurants from './restaurants'
 import products from './products'
+import extras from './extras'
+import cart from './cart'
+import categories from './categories'
+import orders from './orders'
 
 Vue.use(Vuex)
 
 const Store = new Vuex.Store({
   modules: {
     restaurants,
-    products
+    products,
+    extras,
+    cart,
+    categories,
+    orders
   },
   mutations: {
     setItems (state, {resource, items}) {

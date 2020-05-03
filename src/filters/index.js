@@ -25,7 +25,13 @@ const filters = () => {
   Vue.filter('betweenTime', function(start, end){
     var ahora = new Date().getHours();
     return ahora >= parseInt(start) && ahora <= parseInt(end)     
+  }),
+
+  Vue.filter('formatPrice', function (data) {    
+    if(data.description){return data.price>0 ? data.name +'('+data.description+') +'+data.price+'€' : data.name}
+    return data.price>0 ? data.name +' +'+data.price+'€' : data.name
   })
+
 }
 
 export default filters

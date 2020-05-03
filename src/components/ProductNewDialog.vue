@@ -1,27 +1,41 @@
 <template>
-    <v-dialog v-model="isOpen" persistent max-width="600px">        
-        <v-card>          
-            <v-card-title class="display-1" >                          
-              {{ product.name }}
-              <v-spacer></v-spacer>
-              <v-btn
-                icon                
-                @click="isOpen = false"
-              >
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-            </v-card-title>          
-          <v-card-text>
-            <v-container>
-              <v-img
+    <div>    
+        <v-dialog v-model="isOpen" persistent max-width="356px">                        
+            <div class="closeIcon">
+                <v-btn
+                    icon                
+                    @click="isOpen = false"               
+                    color="grey"                    
+                    >
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </div>
+            
+        <v-card>    
+            <v-img
               :src="getProductPic(product.pic)"
-              />
+              />                          
+          <v-card-text>
+            <v-container class="cont">              
+                <div class="card__title" >                          
+                    {{ product.name }}                      
+                </div>  
+                 <div class="card__description" >                          
+                    {{ product.description }}                      
+                </div>  
+                <div class="card__title" >                          
+                    Alérgenos             
+                </div>  
+                <div class="card__description" >                          
+                    <v-chip  v-for="alergeno in product.allergens" :key="alergeno._id"
+                        class="ma-1 top__chips"
+                        color="#E63946"
+                        >
+                            {{ alergeno.name }}
+                    </v-chip>                
+                </div>  
               <v-row>
-                <v-col cols="12" >
-                  <p>
-                    {{ product.description}}
-                  </p>                  
-                </v-col>    
+                                
                 <v-spacer></v-spacer>  
               </v-row>
               <v-row>
@@ -99,6 +113,7 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+    </div>
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -199,5 +214,38 @@ export default {
 </script>
 <style  scoped>
 
+    .closeIcon{
+        position: absolute;
+        top: 0;
+        width:380px;
+        justify-content: end;
+        text-align: end;
 
+    }
+
+    .card__title{        
+        display: block;
+        padding-top: 8px;
+        font-size: 16px !important;
+        font-weight: 500;
+        color: #333333;
+    }
+    .card__description{        
+        display: block;
+        padding-top: 4px;
+        font-size: 10px !important;
+        font-weight: 400;
+        color: #808080;
+    }    
+    .cont{
+        padding-right: .3rem !important;
+        padding-left: .3rem !important;
+    }
+
+    .top__chips{
+        max-height: 16px;
+        font-size: 10px !important;
+        font-weight: 300;
+        color: #F2F2F2 !important;    
+    }
 </style>

@@ -3,18 +3,19 @@
     <v-hover v-slot:default="{ hover }">
         <v-card
             :elevation="hover ? 24 : 6"
-            class="col-md-5 my-2"
+            class="col-md-6 mx-auto my-2"
             @click="emitClick()"
+            
             >            
       <v-list-item three-line>
         <v-list-item-content>
-          <v-list-item-title class="title">{{ product.name }}</v-list-item-title>
+          <v-list-item-title class="product__title">{{ product.name }}</v-list-item-title>
           <v-list-item-subtitle class="subtitle-1">{{ product.description }} </v-list-item-subtitle>
         </v-list-item-content>
   
         <v-list-item-avatar
           tile
-          size="120"
+          size="100"
           class="d-none d-md-flex"
         >
             <v-img
@@ -34,7 +35,7 @@
                 </v-tooltip>   
                 <v-spacer></v-spacer>
   
-                <h1 class="">{{ product.price }}€</h1>               
+                <h3 class="">{{ product.price }}€</h3>               
 
               </v-card-actions>
     </v-card>
@@ -107,3 +108,10 @@ export default {
     
 }
 </script>
+<style scoped>
+
+    .product__title{
+        font-size: 16px !important;
+    }
+
+</style>

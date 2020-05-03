@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import PageRestaurant from '@/pages/PageRestaurant.vue'
+import PageOrder from '@/pages/PageOrder.vue'
 
 Vue.use(VueRouter)
 
@@ -15,6 +16,11 @@ Vue.use(VueRouter)
     path: '/restaurant/:id',
     name: 'PageRestaurant',
     component: PageRestaurant
+  },
+  {
+    path: '/order/',
+    name: 'PageOrder',
+    component: PageOrder
   },
   {
     path: '/about',
