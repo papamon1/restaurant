@@ -79,8 +79,7 @@ export default {
         padding-bottom: 8px;
         padding-left: 16px;
         font-weight: 700;
-        font-size:15px;
-        
+        font-size:15px;        
     }
 
 </style>
