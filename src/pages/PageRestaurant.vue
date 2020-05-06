@@ -22,7 +22,7 @@
                 <v-col  cols="12" md="4" class="align-self-end">      
                     <div class="row">
                         <v-col cols="12">
-                            <div><v-icon color="#4496E8">mdi-clock-outline</v-icon><span v-bind:class="{closed:!isOpen}"> <strong> Horario de pedidos: </strong>{{ restaurant.opening }} - {{ restaurant.closing }} </span></div>                   
+                            <div><v-icon color="#4496E8">mdi-clock-outline</v-icon><span v-bind:class="{closed:!isOpen}"> <strong> Horario de pedidos: </strong>{{ openingTime }} </span></div>                   
                             <v-icon color="#4496E8" v-if="restaurant.delivery">mdi-moped</v-icon>Local con reparto     
                             <v-icon color="#4496E8" v-if="restaurant.takeaway">mdi-basket</v-icon> Recogida   
                         </v-col>
@@ -72,7 +72,7 @@
 
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import ProductList from '@/components/ProductList'
 import ProductNewDialog from '@/components/ProductNewDialog'
 import CartSidebar from '@/components/CartSidebar'
@@ -108,9 +108,16 @@ export default {
         products: state => state.products.items,        
         cart: state => state.cart.items,        
       }),      
-      isOpen(){
-            var ahora = new Date().getHours();
-            return ahora >= parseInt(this.restaurant.opening) && ahora <= parseInt(this.restaurant.closing) 
+      ...mapGetters({
+        'openingTime': 'restaurants/getOpeningTime'   
+      }), 
+      isOpen(){          
+        var ahora = new Date()
+        if (ahora.getHours()<16){
+            return ahora.getHours() >= parseInt(this.restaurant.openingTime[ahora.getDay()].lunch.opening) && ahora <= parseInt(this.restaurant.openingTime[ahora.getDay()].lunch.closing) 
+        }else{
+            return ahora.getHours() >= parseInt(this.restaurant.openingTime[ahora.getDay()].dinner.opening) && ahora <= parseInt(this.restaurant.openingTime[ahora.getDay()].dinner.closing) 
+        }
       },      
     },
     methods:{        
@@ -147,10 +154,6 @@ export default {
     top: 6rem;
 }
 
-.cont{
-    padding-right: 3rem;
-    padding-left: 3rem;
-}
 
 .top__title{
     font-size: 24px;

@@ -69,7 +69,7 @@ export default {
     .card__description{
         padding-left: 16px;
         padding-right: 16px;
-        font-size: 10px !important;
+        font-size: 12px !important;
         min-height: 33px;
         color: #808080;
     }

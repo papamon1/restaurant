@@ -5,7 +5,7 @@
                 <v-btn
                     icon                
                     @click="isOpen = false"               
-                    color="grey"                    
+                    color="black"                    
                     >
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
@@ -14,6 +14,7 @@
         <v-card>    
             <v-img
               :src="getProductPic(product.pic)"
+              max-height="300px"
               />                          
           <v-card-text>
             <v-container class="cont">              
@@ -23,86 +24,82 @@
                  <div class="card__description" >                          
                     {{ product.description }}                      
                 </div>  
-                <div class="card__title" >                          
-                    Alérgenos             
-                </div>  
-                <div class="card__description" >                          
-                    <v-chip  v-for="alergeno in product.allergens" :key="alergeno._id"
-                        class="ma-1 top__chips"
-                        color="#E63946"
-                        >
-                            {{ alergeno.name }}
-                    </v-chip>                
-                </div>  
-              <v-row>
-                                
-                <v-spacer></v-spacer>  
-              </v-row>
-              <v-row>
-                <v-col cols="12" sm="6">
-                  <h1>Ingredientes</h1>
-                  <p class="mt-2">{{ product.ingredients }}</p>                  
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <h1>Alérgenos</h1>
-                  <ul class="mt-2">
-                    <li v-for="alergeno in product.allergens" :key="alergeno._id">
-                      {{ alergeno.name }}
-                    </li>
-                  </ul>                  
-                </v-col>
-              </v-row>
-              <v-row v-if="product.sizes.length>0">
-                <v-col cols="12" >
-                <h1>Tamaño</h1>                  
+
+
+                <div v-if="product.allergens.length>0">
+                    <div class="card__title" >                          
+                        Alérgenos             
+                    </div>  
+                    <div class="card__description" >                          
+                        <v-chip  v-for="alergeno in product.allergens" :key="alergeno._id"
+                            class="ma-1 top__chips"
+                            color="#E63946"
+                            >
+                                {{ alergeno.name }}
+                        </v-chip>                
+                    </div>  
+                </div>
+                
+              
+                <div v-if="product.sizes.length>0">                    
+                    <div class="card__title" >                          
+                        Tamaño             
+                    </div>                
                     <v-radio-group v-model="element.size" row>
-                      <v-radio v-for="size in product.sizes" :key="size._id" 
+                    <v-radio v-for="size in product.sizes" :key="size._id" 
                         :label="size | formatPrice " :value="size._id">
-                      </v-radio>                  
+                    </v-radio>                  
+                    </v-radio-group>                                
+                </div>
+
+                <div v-for="(variant, index) in product.variants" :key="variant._key">
+                    
+                    <div class="card__title" >                          
+                        {{ variant.name }}
+                    </div> 
+                    <v-radio-group v-model="element.variants[index]" row class="card__description">
+                    <v-radio v-for="va in variant.vars" :key="va._id" 
+                        :label=" va | formatPrice" :value="va._id" >
+                    </v-radio>                  
                     </v-radio-group>
-                </v-col>                  
-              </v-row>
-              <v-row v-for="(variant, index) in product.variants" :key="variant._key">
-                <v-col cols="12">
-                <h1>{{ variant.name }}</h1>
-                    <v-radio-group v-model="element.variants[index]" row>
-                      <v-radio v-for="va in variant.vars" :key="va._id" 
-                        :label=" va | formatPrice" :value="va._id">
-                      </v-radio>                  
-                    </v-radio-group>
-                </v-col>    
-              </v-row>
-              <v-row>
-                <v-col cols="12" v-if="product.sizes.length>0">
-                <h1>¿Quieres ingredientes extra?</h1>                  
+                
+                </div>
+
+
+                <div v-if="product.sizes.length>0">                                
+
+                <div class="card__title" >¿Quieres ingredientes extra?</div>
                     <v-autocomplete
-                      v-model="element.extras"
-                      :items="prepareExtrasForAuocomplete()"
-                      outlined
-                      color="primary"
-                      dense
-                      chips
-                      small-chips
-                      label="Elige tus extras"
-                      multiple
-                      class="mt-4"
+                        v-model="element.extras"
+                        :items="prepareExtrasForAuocomplete()"
+                        outlined
+                        color="primary"
+                        dense
+                        chips
+                        small-chips
+                        label="Elige tus extras"
+                        multiple
+                        class="mt-4"
                     ></v-autocomplete>
-                </v-col>                  
-              </v-row>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field
+                        
+                </div>
+
+                <div>
+                    <div class="card__title" >                          
+                        Déjanos tus indicaciones
+                    </div> 
+
+                    <v-text-field
                     v-model="element.comments"                                                            
                     outlined
                     label="Añade un comentario"
                     style="min-height: 96px"            
                     rows="4"
                     row-height="30"                    
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-            </v-container>
-            <small>*indicates required field</small>
+                    ></v-text-field>            
+                </div>
+                
+            </v-container>            
           </v-card-text>
           <v-card-actions class="justify-center">         
             <v-col cols="4" class="mx-2"> 
@@ -212,12 +209,12 @@ export default {
     },             
 }
 </script>
-<style  scoped>
+<style>
 
     .closeIcon{
         position: absolute;
-        top: 0;
-        width:380px;
+        top: 70px;
+        width:400px !important;
         justify-content: end;
         text-align: end;
 
@@ -230,10 +227,12 @@ export default {
         font-weight: 500;
         color: #333333;
     }
+
+    
     .card__description{        
         display: block;
         padding-top: 4px;
-        font-size: 10px !important;
+        font-size: 12px !important;
         font-weight: 400;
         color: #808080;
     }    
@@ -248,4 +247,40 @@ export default {
         font-weight: 300;
         color: #F2F2F2 !important;    
     }
+
+    /* Clases de vuetify para controles radiobutton */
+    .mdi-radiobox-blank{
+        font-size:16px !important;
+    }
+
+    .v-input--selection-controls__input label{
+        font-size: 12px !important;
+    }
+
+    .v-input--selection-controls__input+.v-label {
+        font-size: 12px !important;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .v-input--selection-controls__ripple {
+        border-radius: 50%;
+        cursor: pointer;
+        height: 18px !important;
+        position: absolute;
+        transition: inherit;
+        width: 18px !important;
+        left: -4px;
+        top: calc(50% - 16px) !important;
+        margin: 7px;
+    }
+
+    .v-input--selection-controls {
+        margin-top: 0px;
+        padding-top: 4px;
+    }
+
 </style>
