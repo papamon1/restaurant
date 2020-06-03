@@ -1,7 +1,6 @@
 export default{
 
     getOpeningTime(state){
-        debugger
         var ahora = new Date()
         if (ahora.getHours()<16){
             return `Comidas de ${parseInt(state.item.openingTime[ahora.getDay()].lunch.opening)} a ${parseInt(state.item.openingTime[ahora.getDay()].lunch.closing)}`
@@ -11,7 +10,6 @@ export default{
     },
 
     isOpen(state){
-        debugger
         var ahora = new Date()
         if (ahora.getHours()<16){
             return ahora.getHours() >= parseInt(state.item.openingTime[ahora.getDay()].lunch.opening) && ahora <= parseInt(state.item.openingTime[ahora.getDay()].lunch.closing) 

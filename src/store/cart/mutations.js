@@ -10,10 +10,13 @@ export default {
     return action.payload
   },
 
-  [type.REMOVE_CART_ELEMENT] (state, action) {        
-    Vue.set(state, 'items', action.payload)
-    state.error = null
+  [type.UPDATE_CART_ELEMENT] (state, action) {  
+    Vue.set(state.items, action.index, action.element)    
     return state
   },
 
+  [type.REMOVE_CART_ELEMENT] (state, action) {    
+    state.items.splice(action.payload, 1)        
+    return state
+  },
 }

@@ -2,7 +2,7 @@
     <v-footer
       dark
       padless      
-      class="mt-2"
+      class="mt-2"      
     >
       <v-card
         flat

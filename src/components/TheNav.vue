@@ -2,12 +2,14 @@
     <div>
         <v-app-bar            
             app
-            dark                                     
+            color="#ffffff"
+            height="80"
+            class="theNav"
         >            
             <v-avatar :tile="true">
                 <img :src="require('@/assets/logo_mono.png')" alt="logo">
             </v-avatar>
-            <v-toolbar flat>
+            <v-toolbar flat color="#ffffff" class="toolbar--text">
                 
                 <v-toolbar-title>
                     <router-link :to="{name: 'PageRestaurant', params:{id:'5e835a751c9d440000fface6'}}" class="navbar-item">
@@ -25,22 +27,63 @@
 
                 <v-btn icon>
                     <v-icon>mdi-magnify</v-icon>
-                </v-btn>
+                </v-btn>                                
 
-                <v-btn icon>
-                    <v-icon>mdi-dots-vertical</v-icon>
-                </v-btn>
+                <UserMenu :user="user"></UserMenu>
+
             </v-toolbar>
-        </v-app-bar>
-        <v-parallax height="350" src="https://res.cloudinary.com/glovoapp/w_1200,f_auto,q_auto/Stores/witqe1qslfrrj9kp3dm6"></v-parallax>
+        </v-app-bar>     
+        
+
     </div>
     
 </template>
 <script>
+import UserMenu from '@/components/UserMenu'
+import {mapGetters} from 'vuex'
 export default {
-    
+    components:{
+        UserMenu
+    },    
+    computed:{
+        ...mapGetters({
+            'user': 'auth/authUser'
+        })
+    }
+        
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
+
+.toolbar--text{
+    font-size: 34px;
+    font-weight: 400;
+}
+
+
+
+
+//OVERRIDEN VUETIFY CLASSES
+
+
+.v-input input {
+    max-height: 32px !important;
+    font-size: 14px !important;
+}
+
+.theNav{
+    box-shadow: none !important;    
+    border-bottom: 2px solid !important;
+    border-bottom-color: #4496E8 !important;
+    border-radius: 0px !important;
+}
+
+.theme--light.v-sheet {
+    border-radius: 0px !important;
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+    border-bottom-left-radius: 0px !important;
+}
 
 </style>

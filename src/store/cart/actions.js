@@ -18,9 +18,20 @@ export default {
     return commit(type.ADD_CART_ELEMENT, {payload:element})    
   },
 
+  addAmountCartElement ({state, commit }, index ) {    
+    const element = {...state.items[index]}
+    element.amount +=1
+    return commit(type.UPDATE_CART_ELEMENT, {index:index, element:element })    
+  },
+
   removeCartElement ({ state, commit }, index ) {        
-    const cart = state.items    
-    cart.splice(index, 1)
-    return commit(type.REMOVE_CART_ELEMENT, {payload:cart})    
+    const element = {...state.items[index]}    
+    if(element.amount-1>0){
+      element.amount=element.amount-1
+      return commit(type.UPDATE_CART_ELEMENT, {index:index, element:element }) 
+    }else{
+      return commit(type.REMOVE_CART_ELEMENT, {payload:index})     
+    } 
+       
   }
 }

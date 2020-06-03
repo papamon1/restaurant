@@ -26,7 +26,7 @@
                 </div>  
 
 
-                <div v-if="product.allergens.length>0">
+                <div v-if="product.allergens">
                     <div class="card__title" >                          
                         Alérgenos             
                     </div>  
@@ -34,6 +34,7 @@
                         <v-chip  v-for="alergeno in product.allergens" :key="alergeno._id"
                             class="ma-1 top__chips"
                             color="#E63946"
+                            outlined
                             >
                                 {{ alergeno.name }}
                         </v-chip>                
@@ -41,7 +42,7 @@
                 </div>
                 
               
-                <div v-if="product.sizes.length>0">                    
+                <div v-if="product.sizes">                    
                     <div class="card__title" >                          
                         Tamaño             
                     </div>                
@@ -66,7 +67,7 @@
                 </div>
 
 
-                <div v-if="product.sizes.length>0">                                
+                <div v-if="product.sizes">                                
 
                 <div class="card__title" >¿Quieres ingredientes extra?</div>
                     <v-autocomplete
@@ -90,12 +91,14 @@
                     </div> 
 
                     <v-text-field
+                    dense
                     v-model="element.comments"                                                            
                     outlined
                     label="Añade un comentario"
                     style="min-height: 96px"            
                     rows="4"
-                    row-height="30"                    
+                    row-height="30"          
+                    class="mt-4"          
                     ></v-text-field>            
                 </div>
                 
@@ -163,14 +166,26 @@ export default {
             }).price
         }        
         
+        
+        //Variants        
+        if(this.element.variants){
+            this.element.variants.forEach((elementVariant, index) => {            
+                sum+= this.element.prod_vars[index].vars[elementVariant].price
+            });
+        }
+        
+
+
 
         //Extras
-
-        this.element.extras.forEach(elementExtra => {
-          sum+= this.extrasList.find((extra)=>{
-                return elementExtra === extra._id;
-            }).price
-        });
+        if(this.element.extras){
+            this.element.extras.forEach(elementExtra => {
+                sum+= this.extrasList.find((extra)=>{
+                    return elementExtra === extra._id;
+                }).price
+            });
+        }
+        
         
 
         alert(sum)    
@@ -195,11 +210,14 @@ export default {
         this.element['name']=this.product.name
         this.element['_id']=this.product._id
         this.element['price']=this.product.price
+        this.element['amount']=1
+        this.element['prod_vars']=this.product.variants
+        this.element['prod_extras']=this.product.extras        
         this.$store.dispatch('cart/addCartElement', this.element)        
         .then(()=>{          
           this.element=new Object({
             size:'',
-            variants:{},
+            variants:[],
             extras:[],
             comments:''
           })
@@ -222,9 +240,9 @@ export default {
 
     .card__title{        
         display: block;
-        padding-top: 8px;
+        padding-top: 16px;
         font-size: 16px !important;
-        font-weight: 500;
+        font-weight: 700;
         color: #333333;
     }
 
@@ -242,10 +260,9 @@ export default {
     }
 
     .top__chips{
-        max-height: 16px;
-        font-size: 10px !important;
-        font-weight: 300;
-        color: #F2F2F2 !important;    
+        max-height: 29px;
+        font-size: 14px !important;
+        font-weight: 300;         
     }
 
     /* Clases de vuetify para controles radiobutton */
@@ -276,6 +293,10 @@ export default {
         left: -4px;
         top: calc(50% - 16px) !important;
         margin: 7px;
+        bottom: 1px !important;
+        left: -4px !important;
+        right: -7px !important;
+        top: -4px !important;
     }
 
     .v-input--selection-controls {

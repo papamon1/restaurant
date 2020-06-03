@@ -19,81 +19,85 @@
         
   
         <div class="cart">
-          <span class="cart__title">Mi pedido</span>          
-          <span class="cart__total"> Total: </span><span class="cart__prize">{{ totalPrice }} € </span>
+          <span class="cart__title">Mi pedido</span>                    
+            <span class="cart__total" > Total: </span>
+            <transition name="fade">
+              <span class="cart__prize" v-if="totalVisible">{{ totalPrice }} € </span>              
+            </transition>  
         </div>
   
       </div>
   
       <div>
         <v-row dense>          
-          <v-col
-            v-for="(element, index) in cart"
-            :key="index"
+          <v-col            
             cols="12"
           >
             <v-card              
               class="ficha"              
             >
-              <div class="d-flex flex-no-wrap justify-space-between">
-                <div class="ficha__title">
-                  {{ element.name }}
-                </div>
-                <div>                  
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on }" color="red">                      
-                        <v-icon v-on="on" color="red" class="mb-1" @click="removeCartElement(index)">mdi-minus-circle-outline</v-icon>
-                    </template>                    
-                    <span>Eliminar</span>
-                  </v-tooltip>                
-                </div>                                   
-              </div>    
-              <v-card-subtitle>
-                <ul>
-                  <li v-for="(variant, index) in element.variants" :key="index" >
-                    {{ formatVariant(element._id, index, variant) }}
-                  </li>                  
-                  <li v-for="(extra, index) in element.extras" :key="index" >
-                    {{ formatExtra(extra) }}
-                  </li>    
-                  <li v-if="element.comments" :key="index" >
-                    Comentarios: {{ element.comments }}
-                  </li> 
-                </ul>
-              </v-card-subtitle>            
-              <div class="ficha__precio">
-                {{ calcPrice(element) }} €
-              </div>                                         
+              <div v-for="(element, index) in cart" :key="element.key">
+                <CartSidebarCard :isOnlyInfo=isOnlyInfo :element="element" :index="index" @onCartElementRemoved="removeCartElement"  @onCartAddedAmount="addAmountCartElement"></CartSidebarCard>                                         
+                <div v-if="index+1<cart.length" class="text-center mb-4">-------------------------------------</div>
+              </div>
+              
+              <hr>
+              
+              <div class="d-flex justify-space-between mt-6 align-end">
+                <div class="cart__total--big">Total:</div>
+                <div class="cart__prize">{{ totalPrice }} €</div>
+              </div>
+
+              <transition name="fade">
+                <v-card-actions class="justify-center" v-if="cart.length>0 && isOnlyInfo===false">         
+                  <v-col cols="12" class="mx-2">               
+                    <v-btn to="/order" block dark depressed color="blue">REALIZAR PEDIDO</v-btn>                             
+                  </v-col>   
+                  
+                  <!-- <v-btn color="blue darken-1" text @click="isOpen = false">Save</v-btn> -->
+                </v-card-actions>    
+              </transition>
+
+              
+
             </v-card>
           </v-col>
         </v-row>    
-        <v-card-actions class="justify-center" v-if="cart.length>0">         
-            <v-col cols="8" class="mx-2">               
-              <v-btn to="/order" block dark depressed color="blue">REALIZAR PEDIDO</v-btn>                             
-            </v-col>   
-            
-            <!-- <v-btn color="blue darken-1" text @click="isOpen = false">Save</v-btn> -->
-        </v-card-actions>    
+        
       </div>        
     </div>
 </template>
 <script>
 import { mapState } from 'vuex'
+import CartSidebarCard from '@/components/CartSidebarCard'
 export default {
-    props:{
+    components:{
+      CartSidebarCard
+    },
+    props:{        
         cart:{
-            type:Array,
-            required:false,
-            default:()=>{return[]}
+          type:Array,
+          required:true
         },
-        
+        isOnlyInfo:{
+          type: Boolean,
+          required: false
+        }
     },       
+    data(){
+      return{
+        totalVisible:true
+      }
+    },
   methods:{
+
     removeCartElement(index){      
-      this.$store.dispatch('cart/removeCartElement', index)
-      .then(()=>{
-          this.$emit('onCartElementRemoved', 'Elemento eliminado')
-      })
+      this.$emit('onCartElementRemoved', index, 'Elemento eliminado')
+      
+    },
+    addAmountCartElement(index){           
+      this.$emit('onCartElemenAmountAdded', index,'Elemento añadido a tu pedido')      
+      
     },
     //TODO refactorizar a filter ¿posible?
     //Ver si podemos pasarlo a filter o a una función en otro lugar
@@ -121,36 +125,56 @@ export default {
                 return elementExtra === extra._id;
             }).price
         });
-                
-        return sum
+        
+        
+        //Variants        
+        if(element.variants){
+          element.variants.forEach((elementVariant, index) => {            
+            sum+= element.prod_vars[index].vars[elementVariant].price
+          });
+        }      
+        
+        
+
+        return sum*element.amount
       },     
+      toggleTotalVisible(){        
+        this.totalVisible=false
+        setTimeout(function(){this.totalVisible=true}.bind(this), 100);
+        
+      }
 
   },
   computed: {
       ...mapState({               
         products: state => state.products.items,                     
-        extrasList: state => state.extras.items,                      
+        extrasList: state => state.extras.items,                     
+
       }),
-      totalPrice(){
+      totalPrice(){        
+        this.toggleTotalVisible()
         let sum=0
+        
         this.cart.forEach(element => {
           sum+=this.calcPrice(element)
         });
         
         return Math.round(sum * 100) / 100
       }
+  }, 
+  created(){
+    console.log('isonlyinfo ', this.isOnlyInfo)
   }
 }
 </script>
 <style scoped>
-
-  
 
   .ficha{
       background-color: transparent !important;
       color:black !important;
       padding: 1rem;
       margin-top: .7rem;
+      border-radius: 8px;
       
   }
 
@@ -165,12 +189,8 @@ export default {
   }
 
   .cart{
-    border-bottom: 1px solid #4496E8!important;
+    /* border-bottom: 1px solid #4496E8!important; */
   }  
-
-  .cart__container{
-    
-  }
 
   .cart__title{
     font-size: 24px;
@@ -181,10 +201,17 @@ export default {
     font-weight: 400;
     padding-left: 8px;
   }
-  .cart__prize{
-    font-size: 14px;
-    font-weight: 700;
+
+  .cart__total--big{
+    font-size: 20px;
+    font-weight: 700;    
   }
+
+  .cart__prize{
+    font-size: 16px;
+    font-weight: 400;
+  }
+  
   .v-list-item--active::before{
     background-color: transparent !important;
     opacity: 0;
@@ -196,5 +223,6 @@ export default {
   .v-list-item{
     margin-top: -16px;
   }
+  
   
 </style>

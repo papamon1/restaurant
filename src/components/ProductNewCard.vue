@@ -3,7 +3,7 @@
         <v-card            
             class="cardRounded my-12 mr-6"
             width="259"            
-            :elevation="hover ? 24 : 6"        
+            :elevation="hover ? 24 : 14"        
             @click="emitClick()"    
         >
             <v-img
@@ -11,18 +11,20 @@
                 :src="product.pic"
             ></v-img>
         
-            <div class="card__title d-flex flex-no-wrap justify-space-between">
-                <div>{{ product.name }}</div>
-                <div>                                                          
-                    <v-icon class="card__icon" @click="removeCartElement(index)">mdi-plus-circle-outline</v-icon>         
-                </div>       
+            <div class="card__title">
+                <div>{{ product.name }}</div>                      
             </div>
         
             <div class="card__description">               
                 {{ product.description }}              
             </div>    
         
-            <div class="card__price">{{ product.price }}€</div>       
+            <div class="card__price d-flex flex-no-wrap justify-space-between">
+                <div>{{ product.price }}€</div>       
+                 <div>                                                          
+                    <v-icon class="card__icon" @click="removeCartElement(index)">mdi-plus-circle-outline</v-icon>         
+                </div>
+            </div>
             
         </v-card>
     </v-hover>
@@ -51,6 +53,7 @@ export default {
 
     .cardRounded{
         border-radius: 8px !important;
+        margin-top: 0px !important;
     }
     
     .card__icon{
@@ -63,23 +66,30 @@ export default {
         padding-right: 16px;
         padding-top: 16px;
         font-size: 16px !important;
-        font-weight: 500;
+        font-weight: 700;
     }
 
     .card__description{
         padding-left: 16px;
         padding-right: 16px;
         font-size: 12px !important;
+        font-weight: 400;
         min-height: 33px;
-        color: #808080;
+        color: $secondary;
     }
 
     .card__price{
         padding-top: 16px;
         padding-bottom: 8px;
         padding-left: 16px;
-        font-weight: 700;
-        font-size:15px;        
+        padding-right: 16px;
+        font-weight: 400;
+        font-size:16px;        
+    }
+
+    .v-application .my-12 {
+        margin-top: 16px!important;
+        margin-bottom: 16px!important;
     }
 
 </style>

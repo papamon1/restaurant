@@ -16,16 +16,20 @@ export default {
   },  
 
 
-  processOrder ({ commit }, id ) {      
-    commit(type.PROCESS_ORDER)
-    return api.get(`/orders/process/${id}`)
+  createOrder ({ commit }, order) {          
+    commit(type.CREATE_ORDER)
+    console.log(order)
+    return api.post(`/orders`, order)
       .then(res => {
-        commit(type.PROCESS_ORDER_SUCCESS, {
+        debugger
+        commit(type.CREATE_ORDER_SUCCESS, {
           payload: res.data
         })
+        return Promise.resolve(res.data)
       })
       .catch(error => {
-        commit(type.PROCESS_ORDER_ERROR, { error })
+        console.log(error)
+        commit(type.CREATE_ORDER_ERROR, { error })
       })
   },  
 

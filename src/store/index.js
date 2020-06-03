@@ -22,17 +22,23 @@ import extras from './extras'
 import cart from './cart'
 import categories from './categories'
 import orders from './orders'
+import auth from './auth'
 
 Vue.use(Vuex)
 
 const Store = new Vuex.Store({
+
+  state:{
+    admin:false
+  },
   modules: {
     restaurants,
     products,
     extras,
     cart,
     categories,
-    orders
+    orders,
+    auth
   },
   mutations: {
     setItems (state, {resource, items}) {

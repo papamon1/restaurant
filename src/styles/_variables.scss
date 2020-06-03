@@ -1,0 +1,141 @@
+$primary: #333333;
+$secondary: #808080;
+$chips: #F2F2F2;
+
+$app_primary:#4595E6;
+$app_secondary:#7AB7F5;
+
+
+.bodyText{
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.titles{
+    font-size: 24px !important;
+    font-weight: 700 !important;
+}
+
+.color--secondary{
+    color:$app_secondary !important;
+}
+
+.color__text--secondary{
+    color:$secondary !important;
+}
+
+.color__text--primary{
+    color:$primary !important;
+}
+
+.summary{
+    &--features{
+        color: #333333;
+        font-size: 14px;
+        font-weight: 400;
+    }
+    &--icon{
+        color:$app_primary !important;
+        font-size: 24px !important;        
+    }
+}
+
+
+.button--forward{
+    border-radius: 4px !important;
+    background-color: $app_primary !important;
+    color: $chips !important;
+    font-size: 16px !important;
+    font-weight: 400px !important;
+
+}
+
+.button--backward{
+    border-radius: 4px !important;
+    background-color: $chips !important;
+    color: $app_primary !important;
+    font-size: 16px !important;
+    font-weight: 400px !important;
+    margin-right: 2rem;
+}
+
+button.v-btn.v-btn--block{
+    background-color: $app_primary !important;
+}
+
+
+
+
+
+//VUETIFY OVERRIDING CLASSES
+
+.theme--light.v-sheet {
+    border-radius: 8px !important;
+}
+
+.v-stepper__step__step {    
+    display: none !important;    
+}
+
+
+.v-application {
+    margin-top: 8px !important;
+    margin-bottom: 8px!important;
+}
+
+.v-picker__body {
+    width: 200px !important;
+}
+
+.theme--light.v-stepper .v-stepper__label {    
+    text-shadow: none !important;
+}
+
+.v-stepper__step--active .v-stepper__label{    
+    text-shadow: none !important;
+    color: $app_primary !important;
+}
+
+.v-text-field__slot label{
+    font-size: 14px !important;
+}
+
+.v-select__slot label{
+    font-size: 14px !important;
+}
+
+.v-chip.v-size--small {
+    border-radius: 12px;
+    margin-top: 8px!important;
+    margin-bottom: 8px!important;
+    font-size: 12px;
+    height: 24px;
+    background-color: $app_primary !important;
+    color: $chips !important;
+}
+
+
+
+/* ANIMACIONES*/
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .8s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+}
+
+
+/* Enter and leave animations can use different */
+/* durations and timing functions.              */
+.slide-fade-enter-active {
+    transition: all .3s ease;
+  }
+  .slide-fade-leave-active {
+    transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  }
+  .slide-fade-enter, .slide-fade-leave-to
+  /* .slide-fade-leave-active below version 2.1.8 */ {
+    transform: translateX(10px);
+    opacity: 0;
+  }

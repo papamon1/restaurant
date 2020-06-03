@@ -2,7 +2,7 @@
     <div class="mb-10">
         <section v-for="category in categories" :key="category._id" :id="category._id">
             <v-row>                    
-                <h1 :id="category._id">{{ category.name }}</h1>
+                <h1 :id="category._id" class="list__title">{{ category.name }}</h1>
             </v-row>                
             <v-row class="mb-2">                    
                 <template v-for="product in productsByCategory(category._id)">                
@@ -45,3 +45,8 @@ export default {
     }
 }
 </script>
+<style lang="postcss" scoped>
+    .list__title{
+        margin-top: 16px;
+    }
+</style>

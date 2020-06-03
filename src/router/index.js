@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import PageRestaurant from '@/pages/PageRestaurant.vue'
 import PageOrder from '@/pages/PageOrder.vue'
+import PagePedidosPendientes from '@/pages/PagePedidosPendientes.vue'
+import PageSuccess from '@/pages/PageSuccess.vue'
 
 Vue.use(VueRouter)
 
@@ -20,7 +22,19 @@ Vue.use(VueRouter)
   {
     path: '/order/',
     name: 'PageOrder',
-    component: PageOrder
+    component: PageOrder,
+    meta: {onlyAuthUser: true}
+  },
+  {
+    path: '/success/',
+    name: 'PageSuccess',
+    component: PageSuccess,
+    meta: {onlyAuthUser: true}
+  },
+  {
+    path: '/backoffice/:id',
+    name: 'PedidosPendientes',
+    component: PagePedidosPendientes
   },
   {
     path: '/about',

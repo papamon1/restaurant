@@ -1,7 +1,5 @@
 <template>
-    <div
-      max-width="400"
-      class="mx-auto"      
+    <div            
     >
       <!-- <v-system-bar
         color="blue darken-2"
@@ -20,9 +18,10 @@
 
       <v-list>
         <!-- <v-subheader>REPORTS</v-subheader> -->
-        <v-list-item-group v-model="item" color="primary">
+        <v-list-item-group color="primary">
           <v-list-item
             v-for="(category, i) in categories"
+            class="category"
             :key="i"     
             @click="onCategorySelected(category._id)"                  
             >
@@ -61,7 +60,7 @@ export default {
         });
       },
       handleScroll(){
-        const links = document.querySelectorAll('.v-list-item');
+        const links = document.querySelectorAll('.category');
         const sections = document.querySelectorAll('section');
         let index = sections.length;
 
@@ -94,10 +93,14 @@ export default {
 </script>
 <style scoped>
   .cat__title{
-    margin-left: 16px;
     font-size: 24px;
     font-weight: 700;
   }
+
+
+
+  /* OVERRIDING VUETIFY CLASSES */
+
   .v-list-item--active::before{
     background-color: transparent !important;
     opacity: 0;
@@ -106,8 +109,15 @@ export default {
     font-size: 14px !important;
     font-weight: 400 !important;
   }
-  .v-list-item{
-    margin-top: -16px;
+  .v-list-item{        
+    padding-left: 0px;
+    min-height: 20px;
   }
-  
+
+  .v-list-item__content {        
+    padding-top: 5px !important;
+    padding-right: 0px !important;
+    padding-bottom: 5px !important;
+    padding-left: 0px !important;
+  }
 </style>

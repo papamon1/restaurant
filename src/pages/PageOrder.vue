@@ -1,36 +1,309 @@
 <template>
     <div>
-        <v-container>
-            <v-row no-gutters class="justify-space-between">
-                <v-col  cols="12" md="4">
-                        <div class="row">
-                            <v-col cols="12" lg="4">
-                                <v-img :src="restaurant.logo" max-height="120" contain></v-img>
-                            </v-col>                    
-                            <v-col cols="12" lg="8">
-                                <h1 class="title">{{ restaurant.name }}</h1>
-                                <h2 class="subtitle-2">{{ restaurant.description }}</h2>      
-                                <p class="subtitle-2 mt-2">
-                                    <v-icon>mdi-pound-box</v-icon>                          
-                                    hamburgesas, carne, madrid, centro
-                                </p>
-                            </v-col>    
-                        </div>                                            
-                </v-col>
-                <v-col  cols="12" md="4" class="align-center">      
-                    <div class="row">
-                        <v-col cols="12">
-                            <p><v-icon>mdi-clock-outline</v-icon><span v-bind:class="{red:!isOpen}"> <strong> Horario de pedidos: </strong>{{ restaurant.opening }} - {{ restaurant.closing }} </span></p>                    
-                            <p v-if="restaurant.delivery"><v-icon>mdi-moped</v-icon>Local con reparto</p>     
-                            <p v-if="restaurant.takeaway"><v-icon>mdi-basket</v-icon> Recogida</p>     
-                        </v-col>
-                    </div>                                      
-                </v-col>
-            </v-row>            
-        </v-container>
+        <TopElement :restaurant=restaurant></TopElement>
         
+
+        <v-container class="mb-4">
+            <v-row class="justify-space-between">
+                <v-col md="8">            
+                    <v-stepper v-model="e1" class="v-stepper">
+                        <v-stepper-header>
+                        
+                            <v-stepper-step
+                            key="1"
+                            :complete="e1 > 1"
+                            :step="1"
+                                                        
+                            >
+                            Selección envío
+                            </v-stepper-step>
+
+                            <v-divider                                    
+                            ></v-divider> 
+
+                            <v-stepper-step
+                            key="2"
+                            :complete="e1 > 2"
+                            :step="2"
+                            
+                            >
+                            Datos de entrega
+                            </v-stepper-step>
+
+                            <v-divider                                    
+                            ></v-divider> 
+
+                            <v-stepper-step
+                            key="3"
+                            :complete="e1 > 3"
+                            :step="3"
+                            
+                            >
+                            Pago
+                            </v-stepper-step>
+                                        
+                        </v-stepper-header>
+                
+                        <v-stepper-items>
+                        <v-stepper-content                    
+                            key="1"
+                            :step="1"                            
+                        >
+                            <div class="my-4">
+                                <h2>Seleccione envío o recogida</h2>
+                                <v-radio-group v-model="delivery" :mandatory="false" row
+                                    :error-messages="deliveryErrors"                            
+                                    required
+                                    @input="$v.delivery.$touch()"
+                                    @blur="$v.delivery.$touch()">
+                                    <v-radio label="Envío a domicilio" value="delivery"></v-radio>
+                                    <v-radio label="Recogida en local" value="takeAway"></v-radio>
+                                </v-radio-group>
+                            </div>
+
+
+                            <v-btn class="button--backward" text>Cancel</v-btn>            
+                
+                            <v-btn
+                            color="primary"
+                            @click="nextStep(1)"
+                            class="button--forward"
+                            >
+                            Siguiente
+                            </v-btn>
+                                            
+                        </v-stepper-content>
+
+
+                        
+                        <v-stepper-content                    
+                            key="2"
+                            :step="2"                    
+                        >
+                            <div v-if="user">
+                                <div class="justify-center my-4">
+                                <h2>Compruebe sus datos</h2> 
+                                <form v-if="delivery==='delivery'">                                                                               
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field
+                                                dense
+                                                outlined
+                                                v-model="deliveryAddress.firstName"
+                                                :error-messages="deliveryAddressFirstNameErrors"
+                                                :counter="20"
+                                                label="Nombre"
+                                                required
+                                                @input="$v.deliveryAddress.firstName.$touch()"
+                                                @blur="$v.deliveryAddress.firstName.$touch()"
+                                            ></v-text-field>
+                                        </v-col>
+
+                                        <v-col>
+                                            <v-text-field
+                                                dense
+                                                outlined
+                                                v-model="deliveryAddress.lastName"
+                                                :error-messages="deliveryAddressLastNameErrors"
+                                                :counter="20"
+                                                label="Apellido"
+                                                required
+                                                @input="$v.deliveryAddress.lastName.$touch()"
+                                                @blur="$v.deliveryAddress.lastName.$touch()"
+                                            ></v-text-field>
+                                        </v-col>                                                                    
+                                    </v-row>    
+                                    
+                                    <v-row>
+                                        <v-col cols="12">
+                                            <v-text-field
+                                            dense
+                                            outlined
+                                            v-model="deliveryAddress.address"          
+                                            :error-messages="deliveryAddressAddressErrors"                                                  
+                                            :counter="30"
+                                            label="Dirección"
+                                            @input="$v.deliveryAddress.address.$touch()"
+                                            @blur="$v.deliveryAddress.address.$touch()"
+                                            ></v-text-field>
+                                        </v-col>                            
+                                    </v-row>             
+
+                                    <v-row>
+                                        <v-col md="6" sm="12">
+                                            <v-text-field
+                                            dense
+                                            outlined
+                                            v-model="deliveryAddress.city"    
+                                            :error-messages="deliveryAddressCityErrors"                                
+                                            :counter="9"
+                                            label="Ciudad"
+                                            @input="$v.deliveryAddress.city.$touch()"
+                                            @blur="$v.deliveryAddress.city.$touch()"
+                                            ></v-text-field>
+                                        </v-col>
+                                
+                                        <v-col md="6" sm="12">
+                                            <v-text-field
+                                            dense
+                                            outlined
+                                            v-model="deliveryAddress.zipCode"      
+                                            :error-messages="deliveryAddressZipCodeErrors"                                       
+                                            :counter="5"
+                                            label="C.P"
+                                            @input="$v.deliveryAddress.zipCode.$touch()"
+                                            @blur="$v.deliveryAddress.zipCode.$touch()"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>                                                              
+                                </form>   
+
+
+                                <form v-if="delivery==='takeAway'">                                                                               
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field
+                                                dense
+                                                outlined
+                                                v-model="takeAwayAddress.firstName"
+                                                :error-messages="takeAwayAddressfirstNameErrors"
+                                                :counter="20"
+                                                label="Nombre"
+                                                required
+                                                @input="$v.takeAwayAddress.firstName.$touch()"
+                                                @blur="$v.takeAwayAddress.firstName.$touch()"
+                                            ></v-text-field>
+                                        </v-col>
+
+                                        <v-col>
+                                            <v-text-field
+                                                dense
+                                                outlined
+                                                v-model="takeAwayAddress.lastName"
+                                                :error-messages="takeAwayAddressLastNameErrors"
+                                                :counter="20"
+                                                label="Apellido"
+                                                required
+                                                @input="$v.takeAwayAddress.lasttName.$touch()"
+                                                @blur="$v.takeAwayAddress.lastName.$touch()"
+                                            ></v-text-field>
+                                        </v-col>
+
+                                        
+                                                                    
+                                    </v-row>    
+                                    
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field
+                                            dense
+                                            outlined
+                                            v-model="takeAwayAddress.phone"    
+                                            :error-messages="takeAwayAddressPhoneErrors"                                
+                                            :counter="9"
+                                            label="Teléfono"
+                                            @input="$v.takeAwayAddress.phone.$touch()"
+                                            @blur="$v.takeAwayAddress.phone.$touch()"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field
+                                                dense
+                                                outlined
+                                                v-model="takeAwayAddress.email"
+                                                :error-messages="takeAwayAddressEmailErrors"
+                                                :counter="20"
+                                                label="Email"
+                                                required
+                                                @input="$v.takeAwayAddress.email.$touch()"
+                                                @blur="$v.takeAwayAddress.email.$touch()"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col>         
+                                            <h3>Selecciona la hora de recogida</h3>                           
+                                            <p>Por favor, indica la hora a la que pasarás a recoger tu pedido. Recuerda que estamos abiertos de {{ restaurant.opening }} a {{ restaurant.closing }} </p>
+                                            <v-time-picker
+                                                format="24hr"
+                                                v-model="takeAwayAddress.readyTime"
+                                                :landscape="$vuetify.breakpoint.smAndUp"                                                                         
+                                                :error-messages="takeAwayAddressReadyTimeErrors"
+                                                @input="$v.takeAwayAddress.readyTime.$touch()"
+                                                @blur="$v.takeAwayAddress.readyTime.$touch()"
+                                            ></v-time-picker>
+                                            <div v-if="$v.takeAwayAddress.readyTime.$error">
+                                                <span class="errorMessage"> {{ takeAwayAddressReadyTimeErrors[0]}} </span>
+                                            </div>
+                                        </v-col>
+                                    </v-row>                                                   
+                                </form>                                                                                                                                          
+                                </div>
+                            </div>
+                            
+                            <div v- class="text-center" v-else>
+                                <v-img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimage.flaticon.com%2Ficons%2Fpng%2F512%2F1037%2F1037855.png&f=1&nofb=1" max-height="228" contain></v-img>
+                                <h1>Por favor, loggeate o registrate en el sistema para poder continuar</h1>
+                            </div>
+
+
+                            <v-btn text @click="e1=1" class="button--backward">Atras</v-btn>
+                            <v-btn
+                            color="primary"
+                            @click="nextStep(2)"
+                            v-if="user"
+                            class="button--forward"
+                            >
+                            Siguiente
+                            </v-btn>
+                
+                            
+                
+                            
+                            
+                        </v-stepper-content>
+
+                        <v-stepper-content                    
+                            key="3"
+                            :step="3"
+                        >
+                            
+                            <div v-if="user">
+                                <h2>Pago</h2>
+                                <p>
+                                    Para terminar el proceso, serás redirigido a la plataforma de Paypal, que es la que utilizamos para gestionar nuestros
+                                    pagos de la forma más segura posible, a través de este proveedor de garantía internacional. Después, volverás a nuestro
+                                    entorno donde te indicaremos el número de pedido que el sistema te ha asignado.
+                                </p>
+                            </div>
+                            <div v- class="text-center" v-else>
+                                <v-img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimage.flaticon.com%2Ficons%2Fpng%2F512%2F1037%2F1037855.png&f=1&nofb=1" max-height="228" contain></v-img>
+                                <h1>Por favor, loggeate o registrate en el sistema para poder continuar</h1>
+                            </div>
+                
+                            <v-btn text @click="e1=2" class="button--backward">Atras</v-btn>
+
+                            <v-btn                            
+                            @click="processOrder"
+                            class="button--forward"
+                            v-if="user"
+                            >
+                            Finalizar
+                            </v-btn>
+                                            
+                        </v-stepper-content>
+
+                        </v-stepper-items>
+                    </v-stepper>
+                </v-col>
+                <v-col md="3">
+                    <CartSidebar :isOnlyInfo=true :cart="cart.items" class="sticky"></CartSidebar>
+                </v-col>
+            </v-row>                
+        </v-container>
+
         <v-container>
-            <v-row class="d-flex justify-center mb-6">
+            <!-- <v-row class="d-flex justify-center mb-6">
                 <v-col                    
                     md="6" sm="8"
                 >
@@ -43,10 +316,10 @@
                         <div v-for="(element, index) in cart" :key="index">
                             <div class="d-flex flex-no-wrap justify-space-between">
                                 <div class="ficha__title">
-                                    {{ element.name }}
+                                    {{ element.firstName }}
                                 </div>
                                 <div>                  
-                                    {{ calcPrice(element) }} €               
+                                    {{ calzipCoderice(element) }} €               
                                 </div>                                   
                             </div>    
                             <v-card-subtitle>
@@ -69,252 +342,9 @@
                         </div>                        
                     </div>
                 </v-col>
-            </v-row>
+            </v-row> -->
             
-            <v-stepper v-model="e1">
-                <v-stepper-header>
-                
-                    <v-stepper-step
-                    key="1"
-                    :complete="e1 > 1"
-                    :step="1"
-                    editable
-                    >
-                    Selección envío
-                    </v-stepper-step>
-
-                    <v-divider                                    
-                    ></v-divider> 
-
-                    <v-stepper-step
-                    key="2"
-                    :complete="e1 > 2"
-                    :step="2"
-                    editable
-                    >
-                    Datos de entrega
-                    </v-stepper-step>
-
-                    <v-divider                                    
-                    ></v-divider> 
-
-                    <v-stepper-step
-                    key="3"
-                    :complete="e1 > 3"
-                    :step="3"
-                    editable
-                    >
-                    Pago
-                    </v-stepper-step>
-                                   
-                </v-stepper-header>
-        
-                <v-stepper-items>
-                <v-stepper-content                    
-                    key="1"
-                    :step="1"
-                >
-                    <div class="my-4">
-                        <h2>Seleccione envío o recogida</h2>
-                        <v-radio-group v-model="delivery" :mandatory="false" row
-                            :error-messages="deliveryErrors"                            
-                            required
-                            @input="$v.delivery.$touch()"
-                            @blur="$v.delivery.$touch()">
-                            <v-radio label="Envío a domicilio" value="delivery"></v-radio>
-                            <v-radio label="Recogida en local" value="takeAway"></v-radio>
-                        </v-radio-group>
-                    </div>
-                    
-        
-                    <v-btn
-                    color="primary"
-                    @click="nextStep(1)"
-                    >
-                    Siguiente
-                    </v-btn>
-        
-                    <v-btn text>Cancel</v-btn>
-                </v-stepper-content>
-
-
-                
-                <v-stepper-content                    
-                    key="2"
-                    :step="2"                    
-                >
-                    <div class="justify-center my-4">
-                       <h2>Introduzca sus datos</h2> 
-                        <form v-if="delivery==='delivery'">                                                                               
-                            <v-row>
-                                <v-col>
-                                    <v-text-field
-                                        outlined
-                                        v-model="deliveryAddress.name"
-                                        :error-messages="nameErrors"
-                                        :counter="20"
-                                        label="Name"
-                                        required
-                                        @input="$v.deliveryAddress.name.$touch()"
-                                        @blur="$v.deliveryAddress.name.$touch()"
-                                    ></v-text-field>
-                                </v-col>
-
-                                <v-col>
-                                    <v-text-field
-                                        outlined
-                                        v-model="deliveryAddress.email"
-                                        :error-messages="emailErrors"
-                                        :counter="20"
-                                        label="Email"
-                                        required
-                                        @input="$v.deliveryAddress.email.$touch()"
-                                        @blur="$v.deliveryAddress.email.$touch()"
-                                    ></v-text-field>
-                                </v-col>
-                                                            
-                            </v-row>    
-                            
-                            <v-row>
-                                <v-col md="6" sm="12">
-                                    <v-text-field
-                                    outlined
-                                    v-model="deliveryAddress.tlf"    
-                                    :error-messages="tlfErrors"                                
-                                    :counter="9"
-                                    label="Teléfono"
-                                    @input="$v.deliveryAddress.tlf.$touch()"
-                                    @blur="$v.deliveryAddress.tlf.$touch()"
-                                    ></v-text-field>
-                                </v-col>
-                        
-                                <v-col md="6" sm="12">
-                                    <v-text-field
-                                    outlined
-                                    v-model="deliveryAddress.cp"      
-                                    :error-messages="cpErrors"                                       
-                                    :counter="5"
-                                    label="C.P"
-                                    @input="$v.deliveryAddress.cp.$touch()"
-                                    @blur="$v.deliveryAddress.cp.$touch()"
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row> 
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-text-field
-                                    outlined
-                                    v-model="deliveryAddress.add"          
-                                    :error-messages="addErrors"                                                  
-                                    :counter="30"
-                                    label="Dirección"
-                                    @input="$v.deliveryAddress.add.$touch()"
-                                    @blur="$v.deliveryAddress.add.$touch()"
-                                    ></v-text-field>
-                                </v-col>                            
-                            </v-row>                                  
-                        </form>   
-                        <form v-if="delivery==='takeAway'">                                                                               
-                            <v-row>
-                                <v-col>
-                                    <v-text-field
-                                        outlined
-                                        v-model="takeAwayAddress.name"
-                                        :error-messages="takeAwayAddressNameErrors"
-                                        :counter="20"
-                                        label="Name"
-                                        required
-                                        @input="$v.takeAwayAddress.name.$touch()"
-                                        @blur="$v.takeAwayAddress.name.$touch()"
-                                    ></v-text-field>
-                                </v-col>
-
-                                
-                                                            
-                            </v-row>    
-                            
-                            <v-row>
-                                <v-col>
-                                    <v-text-field
-                                    outlined
-                                    v-model="takeAwayAddress.tlf"    
-                                    :error-messages="takeAwayAddressTlfErrors"                                
-                                    :counter="9"
-                                    label="Teléfono"
-                                    @input="$v.takeAwayAddress.tlf.$touch()"
-                                    @blur="$v.takeAwayAddress.tlf.$touch()"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col>
-                                    <v-text-field
-                                        outlined
-                                        v-model="takeAwayAddress.email"
-                                        :error-messages="takeAwayAddressEmailErrors"
-                                        :counter="20"
-                                        label="Email"
-                                        required
-                                        @input="$v.takeAwayAddress.email.$touch()"
-                                        @blur="$v.takeAwayAddress.email.$touch()"
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
-                            <v-row>
-                                <v-col>         
-                                    <h3>Selecciona la hora de recogida</h3>                           
-                                    <p>Por favor, indica la hora a la que pasarás a recoger tu pedido. Recuerda que estamos abiertos de {{ restaurant.opening }} a {{ restaurant.closing }} </p>
-                                    <v-time-picker
-                                        v-model="takeAwayAddress.readyTime"
-                                        :landscape="$vuetify.breakpoint.smAndUp"                                                                         
-                                        :error-messages="takeAwayAddressReadyTimeErrors"
-                                        @input="$v.takeAwayAddress.readyTime.$touch()"
-                                        @blur="$v.takeAwayAddress.readyTime.$touch()"
-                                    ></v-time-picker>
-                                    <div v-if="$v.takeAwayAddress.readyTime.$error">
-                                        <span class="errorMessage"> {{ takeAwayAddressReadyTimeErrors[0]}} </span>
-                                    </div>
-                                </v-col>
-                            </v-row>                                                   
-                        </form>                                                  
-                    
-                    
-                    </div>
-                    
-        
-                    <v-btn
-                    color="primary"
-                    @click="nextStep(2)"
-                    >
-                    Siguiente
-                    </v-btn>
-        
-                    <v-btn text @click="e1=1">Atras</v-btn>
-                </v-stepper-content>
-
-                <v-stepper-content                    
-                    key="3"
-                    :step="3"
-                >
-                    <div>
-                        <h2>Pago</h2>
-                        <p>
-                            Para terminar el proceso, serás redirigido a la plataforma de Paypal, que es la que utilizamos para gestionar nuestros
-                            pagos de la forma más segura posible, a través de este proveedor de garantía internacional. Después, volverás a nuestro
-                            entorno donde te indicaremos el número de pedido que el sistema te ha asignado.
-                        </p>
-                    </div>
-        
-                    <v-btn
-                    color="success"
-                    @click="processOrder"
-                    >
-                    Finalizar
-                    </v-btn>
-        
-                    <v-btn text @click="e1=2">Atras</v-btn>
-                </v-stepper-content>
-
-                </v-stepper-items>
-            </v-stepper>
+            
         </v-container>
         
       
@@ -323,43 +353,33 @@
 </template>
 <script>
 import { required, email, numeric, minLength, maxLength } from 'vuelidate/lib/validators'
-import { mapState } from 'vuex'
+import { mapState,mapGetters } from 'vuex'
+import TopElement from '@/components/TopElement'
 // import ProductList from '@/components/ProductList'
 // import ProductDialog from '@/components/ProductDialog'
-// import CartSidebar from '@/components/CartSidebar'
+import CartSidebar from '@/components/CartSidebar'
 // import CategoriesSidebar from '@/components/CategoriesSidebar'
 
 export default {    
     components:{
-        //ProductList, ProductDialog, CartSidebar, CategoriesSidebar, Footer
+        TopElement, CartSidebar//ProductList, ProductDialog, CartSidebar, CategoriesSidebar, Footer
     },
     data(){
         return{            
             steps: 3,
             e1:1,     
             delivery:'delivery',
-            deliveryAddress: {
-                name:'',
-                email:'',
-                tlf:'',
-                cp:'',
-                add:''
-            },
-            takeAwayAddress: {
-                name:'',
-                email:'',
-                tlf:'',
-                readyTime:''
-            }    
+            deliveryAddress:{},
+            takeAwayAddress: {}    
         }
     },
     validations: {
         deliveryAddress:{
-            name: { required, maxLength: maxLength(20) },
-            email: { required, email, maxLength: maxLength(20)   },
-            tlf: { required, numeric, maxLength: maxLength(9)   },
-            add: { required, maxLength: maxLength(30)   },
-            cp: { 
+            firstName: { required, maxLength: maxLength(20) },
+            lastName: { required, maxLength: maxLength(20)   },
+            address: { required, maxLength: maxLength(20)   },
+            city: { required, maxLength: maxLength(30)   },
+            zipCode: { 
                 required, 
                 numeric,
                 minLength: minLength(5),
@@ -372,9 +392,10 @@ export default {
             }
         },
         takeAwayAddress: {
-            name: { required, maxLength: maxLength(20) },
-            email: { required, email, maxLength: maxLength(20)   },
-            tlf: { required, numeric, maxLength: maxLength(9)   },      
+            firstName: { required, maxLength: maxLength(20) },
+            lastName: { required, maxLength: maxLength(20)},
+            phone: { required, numeric, maxLength: maxLength(9)},      
+            email: { required, email, maxLength: maxLength(20)},      
             readyTime: { required  },            
         }, 
         delivery:{required}        
@@ -394,19 +415,19 @@ export default {
       ...mapState({
         restaurant: state => state.restaurants.item,        
         products: state => state.products.items,        
-        cart: state => state.cart.items,                              
+        cart: state => state.cart,               
+        user: state => state.auth.item, 
       }),      
+      ...mapGetters({
+        'openingTime': 'restaurants/getOpeningTime',        
+      }),     
       totalPrice(){
         let sum=0
-        this.cart.forEach(element => {
-          sum+=this.calcPrice(element)
+        this.cart.items.forEach(element => {
+          sum+=this.calzipCoderice(element)
         });
         
         return Math.round(sum * 100) / 100
-      },
-      isOpen(){
-            var ahora = new Date().getHours();
-            return ahora >= parseInt(this.restaurant.opening) && ahora <= parseInt(this.restaurant.closing) 
       },      
       checkboxErrors () {
         const errors = []
@@ -420,42 +441,40 @@ export default {
             !this.$v.select.required && errors.push('Item is required')
             return errors
         },
-        nameErrors () {
+        deliveryAddressFirstNameErrors () {
         const errors = []
-            if (!this.$v.deliveryAddress.name.$dirty) return errors            
-            !this.$v.deliveryAddress.name.required && errors.push('Es necesario que rellenes este campo.')
-            !this.$v.deliveryAddress.cp.maxLength && errors.push('Comprueba la longitud de tu nombre')
+            if (!this.$v.deliveryAddress.firstName.$dirty) return errors            
+            !this.$v.deliveryAddress.firstName.required && errors.push('Es necesario que rellenes este campo.')
+            !this.$v.deliveryAddress.zipCode.maxLength && errors.push('Comprueba la longitud de tu nombre')
             return errors
         },
-        emailErrors () {
+        deliveryAddressLastNameErrors () {
         const errors = []
-            if (!this.$v.deliveryAddress.email.$dirty) return errors
-            !this.$v.deliveryAddress.email.email && errors.push('El email debe tener una dirección valida')
-            !this.$v.deliveryAddress.email.required && errors.push('Email es un campo requerido')
-            !this.$v.deliveryAddress.cp.maxLength && errors.push('Comprueba la longitud de tu email')
+            if (!this.$v.deliveryAddress.lastName.$dirty) return errors            
+            !this.$v.deliveryAddress.lastName.required && errors.push('Apellido es un campo requerido')
+            !this.$v.deliveryAddress.lastName.maxLength && errors.push('Comprueba la longitud de tu apellido')
             return errors
         },
-        tlfErrors () {
+        deliveryAddressCityErrors () {
         const errors = []
-            if (!this.$v.deliveryAddress.tlf.$dirty) return errors
-            !this.$v.deliveryAddress.tlf.numeric && errors.push('El contenido del campo teléfono debe ser numérico')
-            !this.$v.deliveryAddress.tlf.required && errors.push('Teléfono es un campo requerido')
-            !this.$v.deliveryAddress.cp.maxLength && errors.push('Comprueba la longitud de tu teléfono')
+            if (!this.$v.deliveryAddress.city.$dirty) return errors            
+            !this.$v.deliveryAddress.city.required && errors.push('Ciudad es un campo requerido')
+            !this.$v.deliveryAddress.city.maxLength && errors.push('Comprueba la longitud de tu ciudad')
             return errors
         },
-        cpErrors () {
+        deliveryAddressZipCodeErrors () {
         const errors = []
-            if (!this.$v.deliveryAddress.cp.$dirty) return errors
-            !this.$v.deliveryAddress.cp.numeric && errors.push('El contenido del campo teléfono debe ser numérico')
-            !this.$v.deliveryAddress.cp.required && errors.push('C.P es un campo requerido')
-            !this.$v.deliveryAddress.cp.minLength && errors.push('El código postal no puede ser inferior a 5 dígitos')
-            !this.$v.deliveryAddress.cp.maxLength && errors.push('El código postal no puede ser superior a 5 dígitos')
+            if (!this.$v.deliveryAddress.zipCode.$dirty) return errors
+            !this.$v.deliveryAddress.zipCode.numeric && errors.push('El contenido del campo teléfono debe ser numérico')
+            !this.$v.deliveryAddress.zipCode.required && errors.push('C.P es un campo requerido')
+            !this.$v.deliveryAddress.zipCode.minLength && errors.push('El código postal no puede ser inferior a 5 dígitos')
+            !this.$v.deliveryAddress.zipCode.maxLength && errors.push('El código postal no puede ser superior a 5 dígitos')
             return errors
         },
-        addErrors () {
+        deliveryAddressAddressErrors () {
         const errors = []
-            if (!this.$v.deliveryAddress.add.$dirty) return errors            
-            !this.$v.deliveryAddress.add.required && errors.push('Es necesario que rellenes este campo.')
+            if (!this.$v.deliveryAddress.address.$dirty) return errors            
+            !this.$v.deliveryAddress.address.required && errors.push('Es necesario que rellenes este campo.')
             return errors
         },
         deliveryErrors () {
@@ -464,27 +483,33 @@ export default {
             !this.$v.delivery.required && errors.push('Es necesario elegir un tipo de recogida.')
             return errors
         },
-        takeAwayAddressNameErrors () {
+        takeAwayAddressfirstNameErrors () {
         const errors = []
-            if (!this.$v.takeAwayAddress.name.$dirty) return errors            
-            !this.$v.takeAwayAddress.name.required && errors.push('Es necesario que rellenes este campo.')
-            !this.$v.takeAwayAddress.name.maxLength && errors.push('Comprueba la longitud de tu nombre')
+            if (!this.$v.takeAwayAddress.firstName.$dirty) return errors            
+            !this.$v.takeAwayAddress.firstName.required && errors.push('Es necesario que rellenes este campo.')
+            !this.$v.takeAwayAddress.firstName.maxLength && errors.push('Comprueba la longitud de tu nombre')
+            return errors
+        },
+        takeAwayAddressLastNameErrors () {
+        const errors = []
+            if (!this.$v.takeAwayAddress.lastName.$dirty) return errors            
+            !this.$v.takeAwayAddress.lastName.required && errors.push('El apellido es un campo requerido')
+            !this.$v.takeAwayAddress.lastName.maxLength && errors.push('Comprueba la longitud de tu apellido')
             return errors
         },
         takeAwayAddressEmailErrors () {
         const errors = []
             if (!this.$v.takeAwayAddress.email.$dirty) return errors
-            !this.$v.takeAwayAddress.email.email && errors.push('El email debe tener una dirección valida')
-            !this.$v.takeAwayAddress.email.required && errors.push('Email es un campo requerido')
-            !this.$v.takeAwayAddress.email.maxLength && errors.push('Comprueba la longitud de tu email')
+            !this.$v.takeAwayAddress.email.email && errors.push('Debes introducir una dirección de email válida')
+            !this.$v.takeAwayAddress.email.required && errors.push('Email es un campo requerido')            
             return errors
         },
-        takeAwayAddressTlfErrors () {
+        takeAwayAddressPhoneErrors () {
         const errors = []
-            if (!this.$v.takeAwayAddress.tlf.$dirty) return errors
-            !this.$v.takeAwayAddress.tlf.numeric && errors.push('El contenido del campo teléfono debe ser numérico')
-            !this.$v.takeAwayAddress.tlf.required && errors.push('Teléfono es un campo requerido')
-            !this.$v.takeAwayAddress.tlf.maxLength && errors.push('Comprueba la longitud de tu teléfono')
+            if (!this.$v.takeAwayAddress.phone.$dirty) return errors
+            !this.$v.takeAwayAddress.phone.numeric && errors.push('El contenido del campo teléfono debe ser numérico')
+            !this.$v.takeAwayAddress.phone.required && errors.push('Teléfono es un campo requerido')
+            !this.$v.takeAwayAddress.phone.maxLength && errors.push('Comprueba la longitud de tu teléfono')
             return errors
         },
         takeAwayAddressReadyTimeErrors () {
@@ -530,22 +555,22 @@ export default {
             }
         },
         checkValidation(toValidate, keyList){
-            let checked=[]
+            let checked=[]            
             checked=keyList.filter(key => {              
-                return toValidate[key].$invalid===true
-            });
+                if(toValidate[key]!=null)  return toValidate[key].$invalid===true
+            });            
             if (checked.length===0) return true
             return false
         },
         formatExtra(extraId){            
-        let extraFound = this.extrasList.find(extra => extra._id === extraId)
-        return extraFound.name      
+            let extraFound = this.extrasList.find(extra => extra._id === extraId)
+            return extraFound.firstName      
         },
         formatVariant(productId, variantIndex, variantValue){      
-        let productFound = this.products.find(product => product._id === productId)
-        return productFound.variants[variantIndex].name + ': ' +productFound.variants[variantIndex].vars[variantValue].name      
+            let productFound = this.products.find(product => product._id === productId)
+            return productFound.variants[variantIndex].firstName + ': ' +productFound.variants[variantIndex].vars[variantValue].firstName      
         },
-        calcPrice(element){      
+        calzipCoderice(element){      
             let sum=0
             let productFound = this.products.find(product => product._id === element._id)
             sum+=element.price
@@ -556,69 +581,111 @@ export default {
             }             
             //Extras
 
-            element.extras.forEach(elementExtra => {
-            sum+= this.extrasList.find((extra)=>{
-                    return elementExtra === extra._id;
-                }).price
-            });
+            if(element.extras && element.extras>0){
+                element.extras.forEach(elementExtra => {
+                sum+= this.extrasList.find((extra)=>{
+                        return elementExtra === extra._id;
+                    }).price
+                });
+            }
+            
                     
-            return sum
+
+            //Variants        
+            if(element.variants && element.variants>0){
+                element.variants.forEach((elementVariant, index) => {            
+                    sum+= element.prod_vars[index].vars[elementVariant].price
+                });
+            }
+            
+
+
+            return sum*element.amount
         },     
-        processOrder(){
-            this.$store.dispatch('restaurants/getRestaurant', this.$route.params.id)
+        processOrder(){        
+            let order={}
+            order.cart={...this.cart}
+            order.cart.totalPrice=this.totalPrice
+            order.seller={...this.restaurant}
+            order.delivery=this.delivery
+            order.user=this.user._id
+            order.createdAt= + new Date(),
+            order.updatedAt= + new Date(),
+            order.paymentMethod= "card"              
+            order.updateUrl=''    
+            
+            this.delivery==='delivery' ? order.customerData={...this.deliveryAddress} : order.customerData={...this.takeAwayAddress}
+            order=this.deleteUnusedFields(order)
+
+            this.$store.dispatch('orders/createOrder', order)
+            .then((data)=>{
+                debugger
+                window.location = data.updateUrl
+            })
+        },
+
+        deleteUnusedFields(order){
+            delete order.cart.isFetching
+            delete order.cart.error
+            delete order.seller.tags
+            delete order.seller.subtags
+            delete order.seller.deliveryCodes
+            delete order.seller.openingTime
+            delete order.seller.closing
+            delete order.seller.delivery
+            delete order.seller.takeAway        
+            delete order.customerData.token            
+
+            return order
         }
 
+    },
+    mounted(){
+        this.deliveryAddress={...this.user}
+        this.takeAwayAddress={...this.user, readyTime:''}
     }
 }
 </script>
-<style scoped>
-.empty{
-    background-color: bisque;
+<style lang="scss" scoped>
+
+
+.v-stepper{
+    box-shadow: none;
 }
 
-.ficha{
-    /* background-color: #f1f1f1 !important; */
-    color:black !important;
-    padding: 1rem;
-    background: rgba(252,234,187,1);
-    background: -moz-linear-gradient(top, rgba(252,234,187,1) 0%, rgba(255,225,148,1) 80%, rgba(251,223,147,1) 97%, rgba(255,225,148,1) 98%, rgba(255,225,148,1) 100%);
-    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(252,234,187,1)), color-stop(80%, rgba(255,225,148,1)), color-stop(97%, rgba(251,223,147,1)), color-stop(98%, rgba(255,225,148,1)), color-stop(100%, rgba(255,225,148,1)));
-    background: -webkit-linear-gradient(top, rgba(252,234,187,1) 0%, rgba(255,225,148,1) 80%, rgba(251,223,147,1) 97%, rgba(255,225,148,1) 98%, rgba(255,225,148,1) 100%);
-    background: -o-linear-gradient(top, rgba(252,234,187,1) 0%, rgba(255,225,148,1) 80%, rgba(251,223,147,1) 97%, rgba(255,225,148,1) 98%, rgba(255,225,148,1) 100%);
-    background: -ms-linear-gradient(top, rgba(252,234,187,1) 0%, rgba(255,225,148,1) 80%, rgba(251,223,147,1) 97%, rgba(255,225,148,1) 98%, rgba(255,225,148,1) 100%);
-    background: linear-gradient(to bottom, rgba(252,234,187,1) 0%, rgba(255,225,148,1) 80%, rgba(251,223,147,1) 97%, rgba(255,225,148,1) 98%, rgba(255,225,148,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fceabb', endColorstr='#ffe194', GradientType=0 );
-    border-radius: 29px 29px 29px 29px;
-    -moz-border-radius: 29px 29px 29px 29px;
-    -webkit-border-radius: 29px 29px 29px 29px;    
-    -webkit-box-shadow: 9px 10px 46px 5px rgba(171,196,182,0.96);
-    -moz-box-shadow: 9px 10px 46px 5px rgba(171,196,182,0.96);
-    box-shadow: 9px 10px 46px 5px rgba(171,196,182,0.96);
+.v-stepper__header{
+    box-shadow: none;
 }
 
-.ficha__title{
-    text-decoration: underline;
-    font-size: 1rem;
+.theme--light.v-stepper .v-stepper__step--active .v-stepper__label {
+    text-shadow: none;
+    color: #4496E8;
 }
-.ficha__header{
-    text-decoration: underline;
-    font-size: 1.4rem;
-    text-align: center;
-    margin-bottom: 1rem;
+
+.v-stepper__header {
+    font-size: 24px !important;
+    font-weight: 700 !important;
 }
-.ficha__lista--desc{
-    font-weight: 300;
+
+
+
+span .v-stepper__step__step.primary {    
+    display: none !important;    
 }
+
+.v-divider{
+    display: none;
+}
+
+
+.v-picker__body {
+    width: 200px !important;
+}
+
 .errorMessage{
-    line-height: 12px;
-    word-break: break-word;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    -webkit-hyphens: auto;
-    -ms-hyphens: auto;
-    hyphens: auto;
-    color: #FF5252;
     font-size: 12px;
+    color:#ff5252;
 }
+
 
 </style>

@@ -1,18 +1,19 @@
 import * as type from './types'
 
 export default {  
-  [type.REQUEST_EXTRAS] (state) {
+  [type.CREATE_ORDER] (state) {
     state.isFetching = true
     state.error = null
   },
 
-  [type.REQUEST_EXTRAS_SUCCESS] (state, action) {
+  [type.CREATE_ORDER_SUCCESS] (state, action) {
+    debugger
     state.isFetching = false
-    state.items = [...action.payload]    
+    state.item = {...action.payload}
     state.error = null
   },
 
-  [type.REQUEST_EXTRAS_ERROR] (state, action) {
+  [type.CREATE_ORDER_ERROR] (state, action) {
     state.isFetching = false
     state.error = action.error
   }
