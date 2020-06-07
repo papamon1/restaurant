@@ -1,11 +1,11 @@
 <template>
     <div>    
-        <v-dialog v-model="isOpen" persistent max-width="356px">                        
+        <v-dialog v-model="isOpen" persistent max-width="356px" :overlay-opacity=0.9 overlay-color="#17324D">
             <div class="closeIcon">
                 <v-btn
                     icon                
                     @click="isOpen = false"               
-                    color="black"                    
+                    color="white"                    
                     >
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
@@ -26,7 +26,7 @@
                 </div>  
 
 
-                <div v-if="product.allergens">
+                <div v-if="product.allergens.size>0">
                     <div class="card__title" >                          
                         Alérgenos             
                     </div>  
@@ -42,7 +42,7 @@
                 </div>
                 
               
-                <div v-if="product.sizes">                    
+                <div v-if="product.sizes.size>0">                    
                     <div class="card__title" >                          
                         Tamaño             
                     </div>                

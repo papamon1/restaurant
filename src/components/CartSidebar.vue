@@ -49,7 +49,7 @@
               </div>
 
               <transition name="fade">
-                <v-card-actions class="justify-center" v-if="cart.length>0 && isOnlyInfo===false">         
+                <v-card-actions class="justify-center" v-if="cart.length>0 && isOnlyInfo===false && user">         
                   <v-col cols="12" class="mx-2">               
                     <v-btn to="/order" block dark depressed color="blue">REALIZAR PEDIDO</v-btn>                             
                   </v-col>   
@@ -68,7 +68,7 @@
     </div>
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import CartSidebarCard from '@/components/CartSidebarCard'
 export default {
     components:{
@@ -148,8 +148,10 @@ export default {
   computed: {
       ...mapState({               
         products: state => state.products.items,                     
-        extrasList: state => state.extras.items,                     
-
+        extrasList: state => state.extras.items,                             
+      }),
+      ...mapGetters({
+        'user': 'auth/authUser'
       }),
       totalPrice(){        
         this.toggleTotalVisible()
