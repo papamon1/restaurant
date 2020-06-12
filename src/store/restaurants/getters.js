@@ -2,11 +2,14 @@ export default{
 
     getOpeningTime(state){
         var ahora = new Date()
-        if (ahora.getHours()<16){
-            return `Comidas de ${parseInt(state.item.openingTime[ahora.getDay()].lunch.opening)} a ${parseInt(state.item.openingTime[ahora.getDay()].lunch.closing)}`
-        }else{
-            return `Cenas de ${parseInt(state.item.openingTime[ahora.getDay()].dinner.opening)} a ${parseInt(state.item.openingTime[ahora.getDay()].dinner.closing)}`
-        }
+        // if (ahora.getHours()<16){
+        //     return `Comidas de ${parseInt(state.item.openingTime[ahora.getDay()].lunch.opening)} a ${parseInt(state.item.openingTime[ahora.getDay()].lunch.closing)}`
+        // }else{
+        //     return `Cenas de ${parseInt(state.item.openingTime[ahora.getDay()].dinner.opening)} a ${parseInt(state.item.openingTime[ahora.getDay()].dinner.closing)}`
+        // }
+
+        return `${state.item.openingTime[ahora.getDay()].lunch.opening} - ${state.item.openingTime[ahora.getDay()].lunch.closing} / ${state.item.openingTime[ahora.getDay()].dinner.opening} - ${state.item.openingTime[ahora.getDay()].dinner.closing}`
+
     },
 
     isOpen(state){

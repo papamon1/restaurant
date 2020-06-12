@@ -15,7 +15,7 @@ function checkTokenValidity (token) {
 
 export default{
 
-    loginWithEmailAndPassword ({commit}, userData) {
+      loginWithEmailAndPassword ({commit}, userData) {
         return api.post('/users/login', userData)
             .then(res => {                
                 const user = res.data

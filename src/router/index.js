@@ -26,7 +26,7 @@ Vue.use(VueRouter)
     meta: {onlyAuthUser: true}
   },
   {
-    path: '/success/',
+    path: '/success/:orderId',
     name: 'PageSuccess',
     component: PageSuccess,
     meta: {onlyAuthUser: true}

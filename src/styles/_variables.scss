@@ -11,8 +11,14 @@ $app_secondary:#7AB7F5;
     font-weight: 400;
 }
 
-.titles{
-    font-size: 24px !important;
+.mainTitle{
+    font-size: 32px !important;
+    font-weight: 700 !important;
+    margin-right: 16px;
+}
+
+.secondaryTitle{
+    font-size: 20px !important;
     font-weight: 700 !important;
 }
 
@@ -36,7 +42,7 @@ $app_secondary:#7AB7F5;
     }
     &--icon{
         color:$app_primary !important;
-        font-size: 24px !important;        
+        font-size: 24px !important;                
     }
 }
 
