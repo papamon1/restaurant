@@ -370,7 +370,12 @@ export default {
             e1:1,     
             delivery:'delivery',
             deliveryAddress:{},
-            takeAwayAddress: {}    
+            takeAwayAddress: {},
+            newOrder:{
+                items:[],
+                customerData:{},
+                seller:{}
+            }    
         }
     },
     validations: {
@@ -423,8 +428,8 @@ export default {
       }),     
       totalPrice(){
         let sum=0
-        this.cart.items.forEach(element => {
-          sum+=this.calzipCoderice(element)
+        this.cart.items.forEach((element,index)  => {
+          sum+=this.calzipCoderice(element, index)
         });
         
         return Math.round(sum * 100) / 100
@@ -570,56 +575,68 @@ export default {
             let productFound = this.products.find(product => product._id === productId)
             return productFound.variants[variantIndex].firstName + ': ' +productFound.variants[variantIndex].vars[variantValue].firstName      
         },
-        calzipCoderice(element){      
+        calzipCoderice(element, index){              
             let sum=0
             let productFound = this.products.find(product => product._id === element._id)
+            this.newOrder.items[index]={extras:[], variants:[]}
             sum+=element.price
             if (element.size!=''){
-            sum+= productFound.sizes.find((size)=>{
-                    return size._id === element.size;
-                }).price
+            
+            let sizeFound=productFound.sizes.find((size)=>{
+                return size._id === element.size;
+            })
+                sum+= sizeFound.price
+                this.newOrder.items[index].size={...sizeFound}    
             }             
             //Extras
 
-            if(element.extras && element.extras>0){
-                element.extras.forEach(elementExtra => {
-                sum+= this.extrasList.find((extra)=>{
+            if(element.extras && element.extras.length>0){
+                element.extras.forEach(elementExtra => {                
+                let extraFound=this.extrasList.find((extra)=>{
                         return elementExtra === extra._id;
-                    }).price
+                    })
+                sum+= extraFound.price
+                this.newOrder.items[index].extras.push({...extraFound})
                 });
             }
             
                     
 
             //Variants        
-            if(element.variants && element.variants>0){
-                element.variants.forEach((elementVariant, index) => {            
-                    sum+= element.prod_vars[index].vars[elementVariant].price
+            if(element.variants && element.variants.length>0){                
+                element.variants.forEach((elementVariant, indexVars) => {          
+                    sum+= element.prod_vars[indexVars].vars[elementVariant].price
+                    this.newOrder.items[index].variants.push({...element.prod_vars[indexVars].vars[elementVariant]})
                 });
             }
             
-
-
+            //Parte en la que completamos el producto... Nos viene bien pero deberíamos
+            //refactorizar a varias funciones
+            this.newOrder.items[index].totalPrice=sum
+            this.newOrder.items[index].amount=element.amount
+            this.newOrder.items[index].comments=element.comments
+            this.newOrder.items[index].price=element.price
+            this.newOrder.items[index].name=element.name
             return sum*element.amount
         },     
         processOrder(){        
             let order={}
-            order.cart={...this.cart}
-            order.cart.totalPrice=this.totalPrice
-            order.seller={...this.restaurant}
-            order.delivery=this.delivery
-            order.user=this.user._id
-            order.createdAt= + new Date(),
-            order.updatedAt= + new Date(),
-            order.paymentMethod= "card"              
-            order.updateUrl=''    
+            // order.cart={...this.cart}
+            //TODO refactorizar y dividir en funciones lo que se hace ahora todo en calcPrice
+            this.newOrder.orderPrice=this.totalPrice
+            this.newOrder.seller={...this.restaurant}
+            this.newOrder.delivery=this.delivery
+            this.newOrder.user=this.user._id
+            this.newOrder.createdAt= + new Date(),
+            this.newOrder.updatedAt= + new Date(),
+            this.newOrder.paymentMethod= "card"              
+            this.newOrder.updateUrl=''    
             
-            this.delivery==='delivery' ? order.customerData={...this.deliveryAddress} : order.customerData={...this.takeAwayAddress}
+            this.delivery==='delivery' ? this.newOrder.customerData={...this.deliveryAddress} : this.newOrder.customerData={...this.takeAwayAddress}
             order=this.deleteUnusedFields(order)
 
             this.$store.dispatch('orders/createOrder', order)
             .then((data)=>{
-                debugger
                 window.location = data.updateUrl
             })
         },

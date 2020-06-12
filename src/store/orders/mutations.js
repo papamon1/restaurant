@@ -7,7 +7,6 @@ export default {
   },
 
   [type.CREATE_ORDER_SUCCESS] (state, action) {
-    debugger
     state.isFetching = false
     state.item = {...action.payload}
     state.error = null

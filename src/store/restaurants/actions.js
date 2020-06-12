@@ -30,7 +30,6 @@ export default {
 
   getAllRestaurants ({ commit }, { id }) {
     commit(type.REQUEST_ALL_RESTAURANTS)
-    debugger
     api.get(`/sellers/${id}`)
       .then(res => {
         commit(type.REQUEST_RESTAURANT_SUCCESS, {

@@ -26,7 +26,7 @@
                 </div>  
 
 
-                <div v-if="product.allergens.size>0">
+                <div v-if="product.allergens.length>0">
                     <div class="card__title" >                          
                         Alérgenos             
                     </div>  
@@ -42,7 +42,7 @@
                 </div>
                 
               
-                <div v-if="product.sizes.size>0">                    
+                <div v-if="product.sizes.length>0">                    
                     <div class="card__title" >                          
                         Tamaño             
                     </div>                

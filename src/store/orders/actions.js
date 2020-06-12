@@ -21,7 +21,6 @@ export default {
     console.log(order)
     return api.post(`/orders`, order)
       .then(res => {
-        debugger
         commit(type.CREATE_ORDER_SUCCESS, {
           payload: res.data
         })
