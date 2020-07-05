@@ -1,7 +1,7 @@
 <template>
     <div>
         <TopElement :restaurant=restaurant></TopElement>
-        
+        <hr style="margin-top: 64px;">
 
         <v-container class="mb-4">
             <v-row class="justify-space-between">
