@@ -75,6 +75,10 @@ button.v-btn.v-btn--block{
 
 //VUETIFY OVERRIDING CLASSES
 
+.v-card__title{
+    font-family: 'Montserrat', sans-serif !important;
+}
+
 .theme--light.v-sheet {
     border-radius: 8px !important;
 }

@@ -14,8 +14,10 @@ import AppSocket from './plugins/socket'
 import filters from '@/filters'
 
 
+
+
 Vue.config.productionTip = false
-Vue.use(AppSocket, {connection: 'http://82.158.129.27:3001'})
+// Vue.use(AppSocket, {connection: 'http://82.158.129.27:3001'})
 
 
 filters()

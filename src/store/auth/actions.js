@@ -27,13 +27,14 @@ export default{
             return Promise.reject(err.response.data.errors.message)            
         })
       },
-      registerUser ({commit}, userData) {
+      registerUser ({commit}, userData) {        
         console.log(JSON.stringify(userData))
         return api.post('/users/register', userData)
-            .then((res)=>{                                
-                const user = res.data
-                localStorage.setItem('meetuper-jwt', user.token)
-                commit(type.SET_AUTH_USER, user)
+            .then(()=>{              
+                console.log(commit)
+                // const user = res.data
+                // localStorage.setItem('meetuper-jwt', user.token)
+                // commit(type.SET_AUTH_USER, user)
                 return Promise.resolve('Usuario dado de alta con éxito!!')   
             })
             .catch(err =>{ 
@@ -93,7 +94,9 @@ export default{
             commit('setAuthUser', updatedUser)
             return updatedUser
           })
-      }
-
-
+      },
+      activateUser (_, hash) {
+        // alert(`Sending request with hash: ${hash}`)
+        return api.patch(`/users/${hash}/activate`)
+      },
 }

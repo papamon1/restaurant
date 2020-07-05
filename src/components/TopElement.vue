@@ -34,7 +34,7 @@
                     
                 </v-col>       
                 
-            </v-row>            
+            </v-row>                        
         </v-container>
 </template>
 <script>

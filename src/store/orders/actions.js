@@ -32,4 +32,19 @@ export default {
       })
   },  
 
+  createStripeSession ({ commit }, order) {        
+    commit(type.CREATE_ORDER)    
+    return api.post(`/stripe/createCheckoutSession`, order)
+      .then(res => {
+        commit(type.CREATE_ORDER_SUCCESS, {
+          payload: res.data
+        })
+        return Promise.resolve(res.data)
+      })
+      .catch(error => {
+        console.log(error)
+        commit(type.CREATE_ORDER_ERROR, { error })
+      })
+  },  
+
 }

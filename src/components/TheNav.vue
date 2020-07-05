@@ -28,7 +28,7 @@
                 <v-btn icon>
                     <v-icon>mdi-magnify</v-icon>
                 </v-btn>                                
-
+            
                 <UserMenu :user="user"></UserMenu>
 
             </v-toolbar>

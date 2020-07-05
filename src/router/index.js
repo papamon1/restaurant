@@ -5,6 +5,9 @@ import PageRestaurant from '@/pages/PageRestaurant.vue'
 import PageOrder from '@/pages/PageOrder.vue'
 import PagePedidosPendientes from '@/pages/PagePedidosPendientes.vue'
 import PageSuccess from '@/pages/PageSuccess.vue'
+import PageActivateUser from '@/pages/PageActivateUser'
+import PageRegister from '@/pages/PageRegister'
+import PageLogin from '@/pages/PageLogin'
 
 Vue.use(VueRouter)
 
@@ -13,6 +16,16 @@ Vue.use(VueRouter)
     path: '/',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/register/',
+    name: 'PageRegister',
+    component: PageRegister,    
+  },
+  {
+    path: '/login/',
+    name: 'PageLogin',
+    component: PageLogin,    
   },
   {
     path: '/restaurant/:id',
@@ -35,6 +48,12 @@ Vue.use(VueRouter)
     path: '/backoffice/:id',
     name: 'PedidosPendientes',
     component: PagePedidosPendientes
+  },
+  {
+    path: '/users/:hash/activate',
+    name: 'PageActivateUser',
+    component: PageActivateUser,
+    meta: { onlyGuestUser: true }
   },
   {
     path: '/about',
