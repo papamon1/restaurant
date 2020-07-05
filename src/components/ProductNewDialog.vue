@@ -213,6 +213,7 @@ export default {
         this.element['amount']=1
         this.element['prod_vars']=this.product.variants
         this.element['prod_extras']=this.product.extras        
+        this.element['pic']=this.product.pic        
         this.$store.dispatch('cart/addCartElement', this.element)        
         .then(()=>{          
           this.element=new Object({

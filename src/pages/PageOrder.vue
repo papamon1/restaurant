@@ -275,13 +275,21 @@
                                     pagos de la forma más segura posible, a través de este proveedor de garantía internacional. Después, volverás a nuestro
                                     entorno donde te indicaremos el número de pedido que el sistema te ha asignado.
                                 </p>
-                            </div>
+                            </div>                            
                             <div v- class="text-center" v-else>
                                 <v-img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimage.flaticon.com%2Ficons%2Fpng%2F512%2F1037%2F1037855.png&f=1&nofb=1" max-height="228" contain></v-img>
                                 <h1>Por favor, loggeate o registrate en el sistema para poder continuar</h1>
-                            </div>
-                
+                            </div>                                           
+
                             <v-btn text @click="e1=2" class="button--backward">Atras</v-btn>
+
+                            <!-- <v-btn                            
+                            @click="processOrder"
+                            class="button--forward"
+                            v-if="user"
+                            >
+                            Finalizar
+                            </v-btn> -->
 
                             <v-btn                            
                             @click="processOrder"
@@ -289,8 +297,8 @@
                             v-if="user"
                             >
                             Finalizar
-                            </v-btn>
-                                            
+                            </v-btn>                                       
+
                         </v-stepper-content>
 
                         </v-stepper-items>
@@ -372,10 +380,16 @@ export default {
             deliveryAddress:{},
             takeAwayAddress: {},
             newOrder:{
+                orderPrice:'',
+                delivery:'',
+                createdAt:null,
+                updatedAt:null,
+                paymentMethod:'',
                 items:[],
                 customerData:{},
                 seller:{}
-            }    
+            },
+            stripe_session:null
         }
     },
     validations: {
@@ -525,6 +539,47 @@ export default {
         },
     },
     methods:{        
+
+        stripeHandler(){
+            debugger
+            let order={}
+            // order.cart={...this.cart}
+            //TODO refactorizar y dividir en funciones lo que se hace ahora todo en calcPrice
+            this.newOrder.orderPrice=this.totalPrice
+            this.newOrder.seller={...this.restaurant}
+            this.newOrder.delivery=this.delivery
+            this.newOrder.user=this.user._id
+            this.newOrder.createdAt= + new Date(),
+            this.newOrder.updatedAt= + new Date(),
+            this.newOrder.paymentMethod= "card"              
+            this.newOrder.updateUrl=''    
+            
+            this.delivery==='delivery' ? this.newOrder.customerData={...this.deliveryAddress} : this.newOrder.customerData={...this.takeAwayAddress}
+            order=this.deleteUnusedFields(this.newOrder)
+          
+
+            this.$store.dispatch('orders/createStripeSession', order)
+            .then((data)=>{
+                var stripe = Stripe('pk_test_OCaIHmqUj3xmmbR6fZwmN457000WRxBD5F');
+                debugger
+                let session_id=data.session_id
+                stripe.redirectToCheckout({
+                // Make the id field from the Checkout Session creation API response
+                // available to this file, so you can provide it as parameter here
+                // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
+                sessionId: session_id
+                }).then(function (result) {
+                // If `redirectToCheckout` fails due to a browser or network
+                // error, display the localized error message to your customer
+                // using `result.error.message`.
+                console.log(result.error.message)
+                })
+                .catch(err=>{
+                    console.log(err)
+                });                
+            })
+        },
+
         openProduct(productId){
             //Localizo el index del producto, y envío a la ventana de dialogo dicho producto por su index            
             this.clickedProduct=this.products.findIndex((product)=>{
@@ -616,11 +671,10 @@ export default {
             this.newOrder.items[index].amount=element.amount
             this.newOrder.items[index].comments=element.comments
             this.newOrder.items[index].price=element.price
-            this.newOrder.items[index].name=element.name
+            this.newOrder.items[index].name=element.name            
             return sum*element.amount
         },     
-        processOrder(){        
-            let order={}
+        processOrder(){                    
             // order.cart={...this.cart}
             //TODO refactorizar y dividir en funciones lo que se hace ahora todo en calcPrice
             this.newOrder.orderPrice=this.totalPrice
@@ -630,27 +684,54 @@ export default {
             this.newOrder.createdAt= + new Date(),
             this.newOrder.updatedAt= + new Date(),
             this.newOrder.paymentMethod= "card"              
-            this.newOrder.updateUrl=''    
+            this.newOrder.updateUrl=''
+            this.newOrder.stripeMethod='checkout'    
             
             this.delivery==='delivery' ? this.newOrder.customerData={...this.deliveryAddress} : this.newOrder.customerData={...this.takeAwayAddress}
-            order=this.deleteUnusedFields(order)
+            let order=this.deleteUnusedFields(this.newOrder)
+            console.log(order)
 
-            this.$store.dispatch('orders/createOrder', order)
+            this.$store.dispatch('orders/createOrder', this.newOrder)
             .then((data)=>{
-                window.location = data.updateUrl
+                debugger
+                var stripe = Stripe('pk_test_OCaIHmqUj3xmmbR6fZwmN457000WRxBD5F');
+                debugger
+                let session_id=data.session_id
+                stripe.redirectToCheckout({
+                // Make the id field from the Checkout Session creation API response
+                // available to this file, so you can provide it as parameter here
+                // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
+                sessionId: session_id
+                }).then(function (result) {
+                // If `redirectToCheckout` fails due to a browser or network
+                // error, display the localized error message to your customer
+                // using `result.error.message`.
+                console.log(result.error.message)
+                })
+                .catch(err=>{
+                    console.log(err)
+                });                
+                
             })
+            
         },
 
-        deleteUnusedFields(order){
-            delete order.cart.isFetching
-            delete order.cart.error
+        deleteUnusedFields(order){                                    
             delete order.seller.tags
+            delete order.seller.avatar
+            delete order.seller.description
+            delete order.seller.lat
+            delete order.seller.lon
             delete order.seller.subtags
             delete order.seller.deliveryCodes
             delete order.seller.openingTime
             delete order.seller.closing
             delete order.seller.delivery
-            delete order.seller.takeAway        
+            delete order.seller.takeaway        
+            delete order.seller.pic        
+            delete order.seller.logo        
+            delete order.seller.image        
+            delete order.customerData.avatar
             delete order.customerData.token            
 
             return order
@@ -660,6 +741,11 @@ export default {
     mounted(){
         this.deliveryAddress={...this.user}
         this.takeAwayAddress={...this.user, readyTime:''}
+        let stripeScript = document.createElement('script')
+        stripeScript.setAttribute('src', 'https://js.stripe.com/v3/')
+        document.head.appendChild(stripeScript)
+        
+
     }
 }
 </script>

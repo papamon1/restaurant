@@ -74,7 +74,7 @@ export default {
     created(){        
         this.$store.dispatch('restaurants/getRestaurant', this.$route.params.id)
         .then()
-        this.$socket.on('holi',this.getSocket)
+        // this.$socket.on('holi',this.getSocket)
     },
     computed: {
       ...mapState({

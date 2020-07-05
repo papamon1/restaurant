@@ -110,156 +110,9 @@
                 value="tab-2"
                 >
                 <v-card flat>
-                    <v-container>
-                        <form>
-                            <v-row>
-                                <v-col>
-                                    <v-text-field
-                                        dense
-                                        outlined
-                                        v-model="form.firstName"
-                                        :error-messages="firstNameErrors"
-                                        :counter="20"
-                                        label="Nombre"
-                                        required
-                                        @input="$v.form.firstName.$touch()"
-                                        @blur="$v.form.firstName.$touch()"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col>
-                                    <v-text-field
-                                        dense
-                                        outlined
-                                        v-model="form.lastName"
-                                        :error-messages="lastNameErrors"
-                                        :counter="20"
-                                        label="Apellido"
-                                        required
-                                        @input="$v.form.lastName.$touch()"
-                                        @blur="$v.form.lastName.$touch()"                                
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
-
-                            <v-row>
-                                <v-col>
-                                    <v-text-field
-                                        dense
-                                        outlined
-                                        v-model="form.email"
-                                        :error-messages="emailErrors"
-                                        :counter="20"
-                                        label="Email"
-                                        required
-                                        @input="$v.form.email.$touch()"
-                                        @blur="$v.form.email.$touch()"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col>
-                                    <v-text-field
-                                        dense
-                                        outlined
-                                        v-model="form.phone"
-                                        :error-messages="phoneErrors"   
-                                        :counter="9"
-                                        label="Teléfono"
-                                        required
-                                        @input="$v.form.phone.$touch()"
-                                            @blur="$v.form.phone.$touch()"
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
-
-                            <v-row>
-                                <v-col>
-                                    <v-text-field
-                                        dense
-                                        outlined
-                                        v-model="form.zipCode"
-                                        :error-messages="zipErrors"        
-                                        :counter="6"
-                                        label="C.P"
-                                        required
-                                        @input="$v.form.zipCode.$touch()"
-                                        @blur="$v.form.zipCode.$touch()"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col>
-                                    <v-text-field
-                                        dense
-                                        outlined
-                                        v-model="form.address"          
-                                        :error-messages="addressErrors"                                                  
-                                        :counter="20"
-                                        label="Dirección"
-                                        required
-                                        @input="$v.form.address.$touch()"
-                                        @blur="$v.form.address.$touch()"
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
-
-                            <v-row>
-                                <v-col>
-                                    <v-text-field
-                                        dense
-                                        outlined
-                                        v-model="form.city"
-                                        :error-messages="cityErrors"        
-                                        :counter="6"
-                                        label="Ciudad"
-                                        required
-                                        @input="$v.form.city.$touch()"
-                                        @blur="$v.form.city.$touch()"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col>
-                                    <v-text-field
-                                        dense
-                                        outlined
-                                        v-model="form.avatar"          
-                                        :error-messages="avatarErrors"                                                  
-                                        :counter="150"
-                                        label="avatar"
-                                        required
-                                        @input="$v.form.avatar.$touch()"
-                                        @blur="$v.form.avatar.$touch()"
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
-
-                            <v-row>
-                                <v-col>
-                                    <v-text-field
-                                        type="password"
-                                        dense
-                                        outlined
-                                        v-model="form.password"
-                                        :error-messages="passwordErrors"          
-                                        :counter="6"
-                                        label="Contraseña"
-                                        required
-                                        @input="$v.form.password.$touch()"
-                                        @blur="$v.form.password.$touch()"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col>
-                                    <v-text-field
-                                        type="password"
-                                        dense
-                                        outlined
-                                        v-model="form.passwordConfirmation"
-                                        :error-messages="passwordConfirmationErrors"          
-                                        :counter="20"
-                                        label="Confirmar contraseña"
-                                        required
-                                        @input="$v.form.passwordConfirmation.$touch()"
-                                        @blur="$v.form.passwordConfirmation.$touch()"
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
-                        </form>
-                        <v-btn text @click="register" class="button--forward">Register</v-btn>
+                    <v-container class="text-center">
+                        <p>¿Eres nuevo? Regístrate y únete a nuestra comunidad y empieza a colaborar con los comercios próximos de tu barrio</p>
+                        <v-btn text @click="register" class="button--forward">Registro</v-btn>
                     </v-container>                       
                 </v-card>
                 </v-tab-item>
@@ -414,12 +267,14 @@
     </div>
 </template>
 <script>
+  import { REDIRECT_MESSAGES } from '@/helpers/redirectMessages'
+
 import { required, email, numeric, minLength, maxLength, sameAs } from 'vuelidate/lib/validators'
 export default {
     props:{      
         user:{
             type:Object,
-            required:true
+            required:false
         }  
     },
     data(){
@@ -589,15 +444,7 @@ export default {
                 }.bind(this))
         },
         register(){            
-            this.$v.form.$touch()
-            if (this.checkValidation(this.$v.form, Object.keys(this.form))===false) return false 
-            this.$store.dispatch('auth/registerUser', this.form)            
-            .then(function(errMessage) {                                
-                this.showSnackbar(errMessage, "success")
-            }.bind(this))
-            .catch(function(errMessage) {                                
-                this.showSnackbar(errMessage, "error")
-            }.bind(this))
+            this.$router.push('/register')
         },
         checkValidation(toValidate, keyList){
             let checked=[]
@@ -614,7 +461,11 @@ export default {
         },
     },
     created(){
-        
+        const { messageType } = this.$route.query
+        if (!messageType) return
+        const { message } = REDIRECT_MESSAGES[messageType]
+        this.$toasted.success(message, {duration: 3000})
+        this.$router.push({query: ''})
     }
     
 }
