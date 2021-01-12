@@ -6,6 +6,7 @@ import PageOrder from '@/pages/PageOrder.vue'
 import PagePedidosPendientes from '@/pages/PagePedidosPendientes.vue'
 import PageSuccess from '@/pages/PageSuccess.vue'
 import PageSuccessActivate from '@/pages/PageSuccessActivate.vue'
+import PageSuccessReset from '@/pages/PageSuccessReset.vue'
 import PageActivateUser from '@/pages/PageActivateUser'
 import PageResetPassword from '@/pages/PageResetPassword'
 import PageRegister from '@/pages/PageRegister'
@@ -50,6 +51,11 @@ Vue.use(VueRouter)
     path: '/PageSuccessActivate/',
     name: 'PageSuccessActivate',
     component: PageSuccessActivate,
+  },
+  {
+    path: '/PageSuccessReset/',
+    name: 'PageSuccessReset',
+    component: PageSuccessReset,
   },
   {
     path: '/backoffice/:id',

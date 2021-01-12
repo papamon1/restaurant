@@ -100,7 +100,7 @@ export default {
         const isInvalid = this.$v.$invalid       
         if(!isInvalid){
             this.$store.dispatch('auth/resetPassword', {form:{...this.form, hash:this.hash}})        
-            .then(() => this.$router.push({path: '/login', query: { messageType: USER_RESET_PASSWORD.type}}))
+            .then(() => this.$router.push({path: '/PageSuccessReset', query: { messageType: USER_RESET_PASSWORD.type}}))
             .catch(err => console.log(err))
         }        
     }
