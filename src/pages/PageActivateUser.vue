@@ -21,7 +21,7 @@ export default {
     activateUser() {
       const { hash } = this.$route.params
       this.$store.dispatch('auth/activateUser', hash)        
-        .then(() => this.$router.push({path: '/login', query: { messageType: USER_ACTIVATED.type}}))
+        .then(() => this.$router.push({path: '/PageSuccessActivate', query: { messageType: USER_ACTIVATED.type}}))
         .catch(err => console.log(err))
     }
   }

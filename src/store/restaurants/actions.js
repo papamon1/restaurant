@@ -39,5 +39,18 @@ export default {
       .catch(error => {
         commit(type.REQUEST_RESTAURANT_ERROR, { error })
       })
+  },
+
+  getDelivery ({ rootState, state }) {
+    // Buscamos si el código del cliente está entre los códigos de reparto del restaurante
+    debugger
+    let codes=state.deliveryCodes.filter((deliveryCode)=>{
+      deliveryCode.code === rootState.auth.item.zipCode
+    })
+
+
+    // Si lo está, lo devolvemos
+    if(codes.length>0){return codes[0]}
+    else return null
   }
 }

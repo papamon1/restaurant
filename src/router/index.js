@@ -5,7 +5,9 @@ import PageRestaurant from '@/pages/PageRestaurant.vue'
 import PageOrder from '@/pages/PageOrder.vue'
 import PagePedidosPendientes from '@/pages/PagePedidosPendientes.vue'
 import PageSuccess from '@/pages/PageSuccess.vue'
+import PageSuccessActivate from '@/pages/PageSuccessActivate.vue'
 import PageActivateUser from '@/pages/PageActivateUser'
+import PageResetPassword from '@/pages/PageResetPassword'
 import PageRegister from '@/pages/PageRegister'
 import PageLogin from '@/pages/PageLogin'
 
@@ -45,6 +47,11 @@ Vue.use(VueRouter)
     meta: {onlyAuthUser: true}
   },
   {
+    path: '/PageSuccessActivate/',
+    name: 'PageSuccessActivate',
+    component: PageSuccessActivate,
+  },
+  {
     path: '/backoffice/:id',
     name: 'PedidosPendientes',
     component: PagePedidosPendientes
@@ -53,6 +60,12 @@ Vue.use(VueRouter)
     path: '/users/:hash/activate',
     name: 'PageActivateUser',
     component: PageActivateUser,
+    meta: { onlyGuestUser: true }
+  },
+  {
+    path: '/users/:hash/reset',
+    name: 'PageResetPassword',
+    component: PageResetPassword,
     meta: { onlyGuestUser: true }
   },
   {

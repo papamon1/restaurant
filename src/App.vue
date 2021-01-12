@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <div v-if="!isAdmin">
-      <TheNav></TheNav>        
+      <!-- <TheNav></TheNav>         -->
       <v-content>
         
           <router-view :key="$route.path" />
@@ -17,7 +17,7 @@
 
 <script>
 
-import TheNav from '@/components/TheNav';
+// import TheNav from '@/components/TheNav';
 import TheFooter from '@/components/TheFooter'
 import PageBackoffice from '@/pages/PageBackoffice'
 
@@ -25,7 +25,7 @@ export default {
   name: 'App',
 
   components: {
-    TheNav, TheFooter, PageBackoffice
+    /*TheNav,*/ TheFooter, PageBackoffice
   },
   created(){    
   },

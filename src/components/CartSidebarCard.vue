@@ -3,26 +3,37 @@
       class="mx-auto"
     >
         <div class="">
-            <div class="ficha__amount color__text--primary">
-                x{{ element.amount }}
-            </div>      
-            <div class="ficha__title color__text--primary">
-                {{ element.name }}
-            </div>                                               
-        </div>    
-        <v-card-subtitle>
-            <div v-for="(variant, index) in element.variants" :key="index">
-                <span class="ficha__section color--secondary">{{ formatVariantName(element._id, index, variant) }}:</span> <span class="ficha__text color__text--secondary">{{ formatVariant(element._id, index, variant) }}</span>
-            </div>
-                                 
-            <div v-for="(extra, index) in element.extras" :key="index" >
-                <span class="ficha__section color--secondary">Extras</span>{{ formatExtra(extra) }}
-            </div>    
-            <li v-if="element.comments" :key="index" >
-            <span class="ficha__section color--secondary">Comentarios</span> : {{ element.comments }}
-            </li>         
-        </v-card-subtitle>            
-        <div class="ficha__precio d-flex flex-no-wrap justify-space-between">
+            <v-expansion-panels
+              v-model="panel"
+              flat="true"              
+            >
+              <v-expansion-panel>
+                <v-expansion-panel-header>
+                  <div class="ficha__amount color__text--primary">
+                      x{{ element.amount }}
+                  </div>      
+                  <div class="ficha__title color__text--primary">
+                      {{ element.name }}
+                  </div>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <div v-for="(variant, index) in element.variants" :key="index">
+                    <span class="ficha__section color--secondary">{{ formatVariantName(element._id, index, variant) }}:</span> <span class="ficha__text color__text--secondary">{{ formatVariant(element._id, index, variant) }}</span>
+                  </div>
+                                      
+                  
+                  <div v-if="element.extras.length>0" >
+                      <span class="ficha__section color--secondary">Extras:</span><span v-for="(extra, index) in element.extras" :key="index" class="ficha__text color__text--secondary"> {{ formatExtra(extra) }}</span>
+                  </div>    
+                  <li v-if="element.comments" :key="index" >
+                  <span class="ficha__section color--secondary">Comentarios</span> : {{ element.comments }}
+                  </li>         
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+                                                           
+        </div>           
+        <div class="ficha__precio d-flex flex-no-wrap justify-space-between mb-2">
             <div>{{ calcPrice  }} €</div>
             <div>             
                 <v-tooltip bottom v-if=!isOnlyInfo>
@@ -197,6 +208,9 @@ export default {
   }
   .v-list-item{
     margin-top: -16px;
+  }
+  .v-expansion-panel-header{
+    padding:0;
   }
   
 </style>

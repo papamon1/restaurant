@@ -2,6 +2,11 @@ export const USER_ACTIVATED = {
     type: 'USER_ACTIVATED',
     message: 'Tu cuenta se ha activado con éxito! Puedes hacer login en la plataforma :)'
   }
+
+  export const USER_RESET_PASSWORD = {
+    type: 'USER_RESET_PASSWORD',
+    message: 'Tu contraseña se ha restaurado! Puedes hacer login en la plataforma :)'
+  }
   
   export const USER_REGISTERED = {
     type: 'USER_REGISTERED',

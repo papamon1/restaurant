@@ -28,7 +28,8 @@
                         <h2 class="secondaryTitle">Dirección de entrega:</h2>
                         <p class="top__subtitle">
                             Calle de Ana María, 9, 2 -A, 28039. Madrid
-                            <v-chip outlined class="chip--success">Disponible</v-chip>
+                            <v-chip v-if="deliveryAvailable" outlined class="chip--success"> Disponible</v-chip>
+                            <v-chip v-else outlined class="chip--error"> Sin reparto</v-chip>
                         </p>
                     </div>  
                     
@@ -48,9 +49,24 @@ export default {
     },
     computed:{
         ...mapGetters({
-        'openingTime': 'restaurants/getOpeningTime'   ,
-        'isOpen': 'restaurants/isOpen'   
-      }),         
+            'openingTime': 'restaurants/getOpeningTime'   ,
+            'isOpen': 'restaurants/isOpen',   
+            'getDelivery': 'restaurants/getDelivery',
+            'user': 'auth/authUser'   
+        }),         
+        deliveryAvailable(){
+            debugger
+            let codes=null
+            if (this.user){
+                codes=this.$store.state.restaurants.item.deliveryCodes.filter((deliveryCode)=>{
+                    deliveryCode.code === this.user.zipCode
+                })
+            }                        
+            return codes ? true : false
+        }
+    },
+    methods:{
+       
     }
 }
 </script>
@@ -90,6 +106,12 @@ export default {
     margin-right:16px;
     color: #02C39A !important;
     border-color: #02C39A !important;
+}
+
+.chip--error{
+    margin-right:16px;
+    color: #E63946 !important;
+    border-color: #E63946 !important;
 }
 
 </style>

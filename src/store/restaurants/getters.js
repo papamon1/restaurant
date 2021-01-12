@@ -6,9 +6,8 @@ export default{
         //     return `Comidas de ${parseInt(state.item.openingTime[ahora.getDay()].lunch.opening)} a ${parseInt(state.item.openingTime[ahora.getDay()].lunch.closing)}`
         // }else{
         //     return `Cenas de ${parseInt(state.item.openingTime[ahora.getDay()].dinner.opening)} a ${parseInt(state.item.openingTime[ahora.getDay()].dinner.closing)}`
-        // }
-
-        return `${state.item.openingTime[ahora.getDay()].lunch.opening} - ${state.item.openingTime[ahora.getDay()].lunch.closing} / ${state.item.openingTime[ahora.getDay()].dinner.opening} - ${state.item.openingTime[ahora.getDay()].dinner.closing}`
+        // }        
+        if (state.item.openingTime) return `${state.item.openingTime[ahora.getDay()].lunch.opening} - ${state.item.openingTime[ahora.getDay()].lunch.closing} / ${state.item.openingTime[ahora.getDay()].dinner.opening} - ${state.item.openingTime[ahora.getDay()].dinner.closing}`
 
     },
 
@@ -19,6 +18,10 @@ export default{
         }else{
             return ahora.getHours() >= parseInt(state.item.openingTime[ahora.getDay()].dinner.opening) && ahora <= parseInt(state.item.openingTime[ahora.getDay()].dinner.closing) 
         }
+    },
+
+    getDelivery (state) {        
+        return state.deliveryCodes || null
     }
 
 }

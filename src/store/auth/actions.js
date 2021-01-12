@@ -99,4 +99,12 @@ export default{
         // alert(`Sending request with hash: ${hash}`)
         return api.patch(`/users/${hash}/activate`)
       },
+      validateResetPassword (_, hash) {
+        // alert(`Sending request with hash: ${hash}`)
+        return api.get(`/users/${hash}/validateResetPassword`)
+      },
+      resetPassword (_, form) {
+        // alert(`Sending request with hash: ${hash}`)
+        return api.post(`/users/doResetPassword`, form)
+      },
 }
