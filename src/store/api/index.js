@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const BASE_URL =  process.env.VUE_APP_API_URL + '/api/v1/';
+// const BASE_URL =  process.env.VUE_APP_API_URL + '/api/v1/';
+const BASE_URL =  process.env.VUE_APP_API_URL + 'https://lpa-back-prod.herokuapp.com/api/v1/';
 
 var instance = axios.create({
     baseURL: BASE_URL,
