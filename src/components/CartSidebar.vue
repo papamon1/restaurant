@@ -17,7 +17,7 @@
   
       <div>
         
-  
+
         <div class="cart">
           <span class="cart__title">Mi pedido</span>                    
             <span class="cart__total" > Total: </span>
