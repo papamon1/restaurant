@@ -102,7 +102,6 @@ export default {
   },
   deleteUser(_, hash) {
     // alert(`Sending request with hash: ${hash}`)
-    debugger;
     return api.delete(`/users/${hash}/delete`);
   },
   validateResetPassword(_, hash) {

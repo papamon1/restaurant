@@ -20,7 +20,6 @@ export default {
   methods: {
     activateUser() {
       const { hash } = this.$route.params;
-      debugger;
       this.$store
         .dispatch('auth/deleteUser', hash)
         .then(() =>
