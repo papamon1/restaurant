@@ -13,7 +13,7 @@ import PageActivateUser from '../pages/PageActivateUser';
 import PageResetPassword from '@/pages/PageResetPassword';
 import PageDeleteAccount from '@/pages/PageDeleteAccount';
 import PageRegister from '@/pages/PageRegister';
-import PageLogin from '@/pages/PageLogin';
+import PageLogin from '../pages/PageLogin';
 
 Vue.use(Router);
 export default new Router({
