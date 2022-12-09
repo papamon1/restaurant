@@ -9,7 +9,7 @@ import PageSuccess from '@/pages/PageSuccess.vue';
 import PageSuccessActivate from '@/pages/PageSuccessActivate.vue';
 import PageSuccessDelete from '@/pages/PageSuccessDelete.vue';
 import PageSuccessReset from '@/pages/PageSuccessReset.vue';
-import PageActivateUser from '@/pages/PageActivateUser';
+import PageActivateUser from '../pages/PageActivateUser';
 import PageResetPassword from '@/pages/PageResetPassword';
 import PageDeleteAccount from '@/pages/PageDeleteAccount';
 import PageRegister from '@/pages/PageRegister';
@@ -80,6 +80,7 @@ export default new Router({
       path: '/users/:hash/activate',
       name: 'PageActivateUser',
       component: PageActivateUser,
+      // component: PageActivateUser,
       // meta: { onlyGuestUser: true },
     },
     {
